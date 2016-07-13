@@ -46,8 +46,7 @@ for file in $KEEPERS/*
 do
   FILEPATH=$file
   FILENAME=$(basename $file)
-    echo "KEEPERS -> $FILENAME"
-    mv "$DEVELOPMENT/$FILENAME" "$DEVELOPMENT/$FILENAME.bkp"
+    mv "$DEVELOPMENT/$FILENAME" "$DEVELOPMENT/$FILENAME.bkp" 2> /dev/null
     ln -s "$KEEPERS/$FILENAME" "$DEVELOPMENT/"
 done
 

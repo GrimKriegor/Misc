@@ -41,6 +41,9 @@ git clone https://github.com/TES3MP/PluginExamples.git $KEEPERS/PluginExamples
 #COPY STATIC SERVER AND CLIENT CONFIGS
 cp $CODE/files/tes3mp/tes3mp-{client,server}-default.cfg $KEEPERS
 
+#SET home VARIABLE IN tes3mp-server-default.cfg
+sed -i 's|~/ClionProjects/PS-dev|$KEEPERS/PluginExamples|g' tes3mp-server-default.cfg 
+
 #BUILD RAKNET
 mkdir $DEPENDENCIES/raknet/build
 cd $DEPENDENCIES/raknet/build

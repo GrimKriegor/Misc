@@ -16,15 +16,6 @@ DEPENDENCIES=$BASE/dependencies
 #CREATE FOLDER HIERARCHY
 mkdir $DEVELOPMENT $KEEPERS $DEPENDENCIES
 
-#PULL SOFTWARE VIA GIT
-git clone https://github.com/TES3MP/TES3MP.git $CODE
-git clone https://github.com/OculusVR/RakNet.git $DEPENDENCIES/raknet
-git clone https://github.com/zdevito/terra.git $DEPENDENCIES/terra
-git clone https://github.com/TES3MP/PluginExamples.git $KEEPERS/PluginExamples
-
-#COPY STATIC SERVER AND CLIENT CONFIGS
-cp $CODE/files/tes3mp/tes3mp-{client,server}-default.cfg $KEEPERS
-
 #INSTALL DEPENDENCIES
 if [ "$DISTRO" == "Arch" ]; then
   sudo pacman -S git cmake boost openal openscenegraph mygui bullet qt5-base ffmpeg sdl2 unshield libxkbcommon-x11 gcc-libs clang35 llvm35
@@ -36,6 +27,15 @@ else
   echo "Could not identify your distro, press any key to continue without installing the build dependencies."
   read
 fi
+
+#PULL SOFTWARE VIA GIT
+git clone https://github.com/TES3MP/TES3MP.git $CODE
+git clone https://github.com/OculusVR/RakNet.git $DEPENDENCIES/raknet
+git clone https://github.com/zdevito/terra.git $DEPENDENCIES/terra
+git clone https://github.com/TES3MP/PluginExamples.git $KEEPERS/PluginExamples
+
+#COPY STATIC SERVER AND CLIENT CONFIGS
+cp $CODE/files/tes3mp/tes3mp-{client,server}-default.cfg $KEEPERS
 
 #BUILD RAKNET
 mkdir $DEPENDENCIES/raknet/build

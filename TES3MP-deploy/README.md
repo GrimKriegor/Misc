@@ -9,6 +9,7 @@ This script pair also keeps tes3mp-client-default.cfg and tes3mp-server-default.
 They are pretty bare and have no redundancy (yet), if you feel like testing it, come, testervar, friend or traitor, come.
 
 install.sh -- Creates the folder hierarchy, installs system dependencies, downloads the code, builds RakNet and Terra and launches upgrade.sh
+
 upgrade.sh -- Pulls the latest TES3MP code and if there are any changes, rebuilds the project, keeping the config files safe via symlinks
 
 Currently supports: Arch Linux, Debian, Ubuntu, Linux Mint and Fedora.

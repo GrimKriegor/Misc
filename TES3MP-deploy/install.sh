@@ -46,7 +46,7 @@ cp $CODE/files/tes3mp/tes3mp-{client,server}-default.cfg $KEEPERS
 sed -i "s|~/ClionProjects/PS-dev|$KEEPERS/PluginExamples|g" $KEEPERS/tes3mp-server-default.cfg
 
 #DIRTY HACKS
-sed -i "s|,chat_parser.lua||g" $KEEPERS/tes3mp-server-default.cfg
+sed -i "s|tes3mp.lua,chat_parser.lua|server.lua|g" $KEEPERS/tes3mp-server-default.cfg
 
 #BUILD RAKNET
 mkdir $DEPENDENCIES/raknet/build

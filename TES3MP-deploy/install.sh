@@ -1,14 +1,19 @@
 #!/bin/bash
 
-#UPDATE_SCRIPT=https://grimkriegor.zalkeen.pw/public/upgrade.sh
+#NUMBER OF CPU CORES USED FOR COMPILATION
 CORES=5
 
+#DISTRO IDENTIFICATION
+DISTO="$(lsb_release -si)"
+
+#FOLDER HIERARCHY
 BASE="$(pwd)"
 CODE=$BASE/code
 DEVELOPMENT=$BASE/build
 KEEPERS=$BASE/keepers
 DEPENDENCIES=$BASE/dependencies
 
+#CREATE FOLDER HIERARCHY
 mkdir $DEVELOPMENT $KEEPERS $DEPENDENCIES
 
 #PULL SOFTWARE VIA GIT
@@ -19,6 +24,16 @@ git clone https://github.com/TES3MP/PluginExamples.git $KEEPERS/PluginExamples
 
 #COPY STATIC SERVER AND CLIENT CONFIGS
 cp $CODE/files/tes3mp/tes3mp-{client,server}-default.cfg $KEEPERS
+
+#INSTALL DEPENDENCIES
+if [ $DISTRO = "Arch" ]; then
+  sudo pacman -S git cmake boost openal openscenegraph mygui bullet qt5-base ffmpeg sdl2 unshield libxkbcommon-x11 gcc-libs clang35 llvm35
+elif [ $DISTRO = "Ubuntu" || $DISTRO = "Debian" ]; then
+  sudo apt-get install git libopenal-dev libopenscenegraph-dev libsdl2-dev libqt4-dev libboost-filesystem-dev libboost-thread-dev libboost-program-options-dev libboost-system-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev libbullet-dev libmygui-dev libunshield-dev cmake build-essential libqt4-opengl-dev g++ llvm-3.5 clang-3.5
+else
+  echo "Could not identify your distro, press any key to continue without installing the build dependencies."
+  read
+fi
 
 #BUILD RAKNET
 mkdir $DEPENDENCIES/raknet/build
@@ -33,10 +48,6 @@ cd $DEPENDENCIES/terra/
 make -j$CORES
 
 cd $BASE
-
-#if [ ! -e ./upgrade.sh ]; then
-#  wget $UPDATE_SCRIPT
-#fi
 
 echo -e "\n\n\n\n\nPreparing to build/upgrade..."
 bash upgrade.sh --install

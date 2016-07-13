@@ -4,7 +4,7 @@
 CORES=5
 
 #DISTRO IDENTIFICATION
-DISTO="$(lsb_release -si | awk '{print tolower($0)}')"
+DISTRO="$(lsb_release -si | awk '{print tolower($0)}')"
 
 #FOLDER HIERARCHY
 BASE="$(pwd)"
@@ -18,7 +18,7 @@ mkdir $DEVELOPMENT $KEEPERS $DEPENDENCIES
 
 #CHECK DISTRO AND INSTALL DEPENDENCIES
 case $DISTRO in
-  "arch" )
+  arch)
       sudo pacman -S git cmake boost openal openscenegraph mygui bullet qt5-base ffmpeg sdl2 unshield libxkbcommon-x11 gcc-libs clang35 llvm35 ;;
 
   "debian" | "ubuntu" | "linuxmint" )
@@ -26,6 +26,10 @@ case $DISTRO in
 
   "fedora" )
       sudo dnf groupinstall development-tools openal-devel OpenSceneGraph-qt-devel SDL2-devel qt4-devel boost-filesystem git boost-thread boost-program-options boost-system ffmpeg-devel ffmpeg-libs bullet-devel gcc-c++ mygui-devel unshield-devel tinyxml-devel cmake llvm35 clang ;;
+
+  *)
+      echo "Could not determine your GNU/Linux distro, press any key to continue without installing dependencies"
+      read ;;
 esac
     
 

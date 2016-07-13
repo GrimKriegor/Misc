@@ -25,7 +25,8 @@ case $DISTRO in
       sudo apt-get install git libopenal-dev libopenscenegraph-dev libsdl2-dev libqt4-dev libboost-filesystem-dev libboost-thread-dev libboost-program-options-dev libboost-system-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev libbullet-dev libmygui-dev libunshield-dev cmake build-essential libqt4-opengl-dev g++ llvm-3.5 clang-3.5 libclang-3.5-dev llvm-3.5-dev;;
 
   "fedora" )
-      sudo dnf groupinstall development-tools openal-devel OpenSceneGraph-qt-devel SDL2-devel qt4-devel boost-filesystem git boost-thread boost-program-options boost-system ffmpeg-devel ffmpeg-libs bullet-devel gcc-c++ mygui-devel unshield-devel tinyxml-devel cmake llvm35 clang ;;
+      sudo dnf groupinstall development-tools 
+      sudo dnf install openal-devel OpenSceneGraph-qt-devel SDL2-devel qt4-devel boost-filesystem git boost-thread boost-program-options boost-system ffmpeg-devel ffmpeg-libs bullet-devel gcc-c++ mygui-devel unshield-devel tinyxml-devel cmake llvm35 clang ;;
 
   *)
       echo "Could not determine your GNU/Linux distro, press any key to continue without installing dependencies"
@@ -42,7 +43,7 @@ git clone https://github.com/TES3MP/PluginExamples.git $KEEPERS/PluginExamples
 cp $CODE/files/tes3mp/tes3mp-{client,server}-default.cfg $KEEPERS
 
 #SET home VARIABLE IN tes3mp-server-default.cfg
-sed -i 's|~/ClionProjects/PS-dev|$KEEPERS/PluginExamples|g' tes3mp-server-default.cfg 
+sed -i 's|~/ClionProjects/PS-dev|$KEEPERS/PluginExamples|g' $KEEPERS/tes3mp-server-default.cfg 
 
 #BUILD RAKNET
 mkdir $DEPENDENCIES/raknet/build

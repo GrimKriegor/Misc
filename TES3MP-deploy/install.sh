@@ -4,7 +4,7 @@
 CORES=5
 
 #DISTRO IDENTIFICATION
-DISTO="$(lsb_release -si)"
+DISTO="$(lsb_release -si | awk '{print tolower($0)}')"
 
 #FOLDER HIERARCHY
 BASE="$(pwd)"
@@ -16,17 +16,18 @@ DEPENDENCIES=$BASE/dependencies
 #CREATE FOLDER HIERARCHY
 mkdir $DEVELOPMENT $KEEPERS $DEPENDENCIES
 
-#INSTALL DEPENDENCIES
-if [ "$DISTRO" == "Arch" ]; then
-  sudo pacman -S git cmake boost openal openscenegraph mygui bullet qt5-base ffmpeg sdl2 unshield libxkbcommon-x11 gcc-libs clang35 llvm35
-elif [[ "$DISTRO" == "Ubuntu" || "$DISTRO" == "Debian" || "$DISTRO" == "LinuxMint" ]]; then
-  sudo apt-get install git libopenal-dev libopenscenegraph-dev libsdl2-dev libqt4-dev libboost-filesystem-dev libboost-thread-dev libboost-program-options-dev libboost-system-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev libbullet-dev libmygui-dev libunshield-dev cmake build-essential libqt4-opengl-dev g++ llvm-3.5 clang-3.5
-elif [ "$DISTRO" == "Fedora" ]; then
-  sudo dnf groupinstall development-tools openal-devel OpenSceneGraph-qt-devel SDL2-devel qt4-devel boost-filesystem git boost-thread boost-program-options boost-system ffmpeg-devel ffmpeg-libs bullet-devel gcc-c++ mygui-devel unshield-devel tinyxml-devel cmake llvm35 clang
-else
-  echo "Could not identify your distro, press any key to continue without installing the build dependencies."
-  read
-fi
+#CHECK DISTRO AND INSTALL DEPENDENCIES
+case $DISTRO in
+  "arch" )
+      sudo pacman -S git cmake boost openal openscenegraph mygui bullet qt5-base ffmpeg sdl2 unshield libxkbcommon-x11 gcc-libs clang35 llvm35 ;;
+
+  "debian" | "ubuntu" | "linuxmint" )
+      sudo apt-get install git libopenal-dev libopenscenegraph-dev libsdl2-dev libqt4-dev libboost-filesystem-dev libboost-thread-dev libboost-program-options-dev libboost-system-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev libbullet-dev libmygui-dev libunshield-dev cmake build-essential libqt4-opengl-dev g++ llvm-3.5 clang-3.5 ;;
+
+  "fedora" )
+      sudo dnf groupinstall development-tools openal-devel OpenSceneGraph-qt-devel SDL2-devel qt4-devel boost-filesystem git boost-thread boost-program-options boost-system ffmpeg-devel ffmpeg-libs bullet-devel gcc-c++ mygui-devel unshield-devel tinyxml-devel cmake llvm35 clang ;;
+esac
+    
 
 #PULL SOFTWARE VIA GIT
 git clone https://github.com/TES3MP/TES3MP.git $CODE

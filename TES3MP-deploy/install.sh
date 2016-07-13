@@ -39,7 +39,7 @@ cd $BASE
 #fi
 
 echo -e "\n\n\n\n\nPreparing to build/upgrade..."
-bash upgrade.sh
+bash upgrade.sh --install
 
 read
 

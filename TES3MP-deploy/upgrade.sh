@@ -9,14 +9,18 @@ KEEPERS=$BASE/keepers
 DEPENDENCIES=$BASE/dependencies
 
 RAKNET_LOCATION="$DEPENDENCIES/raknet"
-TERRA_LOCATION="$DEPENDENCIES/terra"
+TERRA_LOCATION="$DEPENDENCIES/terra/release/"
 
 cd $CODE
 git pull
 cd $BASE
 
-echo "Upgrade?"
-read UPGRADE
+if [ "$1" = "--install" ]; then
+  UPGRADE="YES"
+else
+  echo "Upgrade?"
+  read UPGRADE
+fi
 
 if [ "$UPGRADE" = "YES" ]; then
 
@@ -24,7 +28,7 @@ if [ "$UPGRADE" = "YES" ]; then
   mkdir $DEVELOPMENT
 
   cd $DEVELOPMENT
-  cmake $CODE -DBUILD_OPENCS=OFF -DRakNet_INCLUDES=${RAKNET_LOCATION}/include/RakNet -DRakNet_LIBRARY_DEBUG=${RAKNET_LOCATION}/build/Lib/LibStatic/libRakNetLibStatic.a -DRakNet_LIBRARY_RELEASE=${RAKNET_LOCATION}/build/Lib/LibStatic/libRakNetLibStatic.a
+  cmake $CODE -DBUILD_OPENCS=OFF -DRakNet_INCLUDES=${RAKNET_LOCATION}/include/RakNet -DRakNet_LIBRARY_DEBUG=${RAKNET_LOCATION}/build/Lib/LibStatic/libRakNetLibStatic.a -DRakNet_LIBRARY_RELEASE=${RAKNET_LOCATION}/build/Lib/LibStatic/libRakNetLibStatic.a -DTerra_LIBRARY_RELEASE=${TERRA_LOCATION}/lib/libterra.a -DTerra_INCLUDES=${TERRA_LOCATION}/include/terra
   make -j $CORES
 
 fi

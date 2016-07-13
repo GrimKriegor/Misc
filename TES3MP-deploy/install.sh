@@ -18,7 +18,7 @@ mkdir $DEVELOPMENT $KEEPERS $DEPENDENCIES
 
 #CHECK DISTRO AND INSTALL DEPENDENCIES
 case $DISTRO in
-  arch)
+  "arch")
       sudo pacman -S git cmake boost openal openscenegraph mygui bullet qt5-base ffmpeg sdl2 unshield libxkbcommon-x11 gcc-libs clang35 llvm35 ;;
 
   "debian" | "ubuntu" | "linuxmint" )

@@ -28,7 +28,7 @@ if [ "$UPGRADE" = "YES" ]; then
   mkdir $DEVELOPMENT
 
   cd $DEVELOPMENT
-  cmake $CODE -DBUILD_OPENCS=OFF -DRakNet_INCLUDES=${RAKNET_LOCATION}/include/RakNet -DRakNet_LIBRARY_DEBUG=${RAKNET_LOCATION}/build/Lib/LibStatic/libRakNetLibStatic.a -DRakNet_LIBRARY_RELEASE=${RAKNET_LOCATION}/build/Lib/LibStatic/libRakNetLibStatic.a -DTerra_LIBRARY_RELEASE=${TERRA_LOCATION}/lib/libterra.a -DTerra_INCLUDES=${TERRA_LOCATION}/include/terra
+  cmake $CODE -DBUILD_OPENCS=OFF -DRakNet_INCLUDES=${RAKNET_LOCATION}/include/RakNet -DRakNet_LIBRARY_DEBUG=${RAKNET_LOCATION}/build/Lib/LibStatic/libRakNetLibStatic.a -DRakNet_LIBRARY_RELEASE=${RAKNET_LOCATION}/build/Lib/LibStatic/libRakNetLibStatic.a -DTerra_LIBRARY_RELEASE=${TERRA_LOCATION}/lib/libterra.a -DTerra_INCLUDES=${TERRA_LOCATION}/include
   make -j $CORES
 
 fi

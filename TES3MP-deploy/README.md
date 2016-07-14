@@ -2,7 +2,7 @@
 ##A pair of scripts for easily installing and upgrading TES3MP
 <grimkriegor@krutt.org>
 
-When placed in an empty folder these scripts are able to create a folder hierarchy, install the system dependencies, based on your distro, download the code for TES3MP, RakNet and Terra, compile everything and also upgrade it from the latest git changed whenever necessary.
+When placed in an empty folder these scripts are able to create a folder hierarchy, install the system dependencies, based on your distro, download the code for TES3MP, RakNet and Terra, compile everything and also upgrade it from the latest git changes whenever necessary.
 
 This script pair also keeps tes3mp-client-default.cfg and tes3mp-server-default.cfg in a separate folder, to avoid having your changes overwritten whenever an upgrade occurs.
 

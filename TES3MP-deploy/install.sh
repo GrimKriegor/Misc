@@ -48,6 +48,8 @@ sed -i "s|~/ClionProjects/PS-dev|$KEEPERS/PluginExamples|g" $KEEPERS/tes3mp-serv
 
 #DIRTY HACKS
 sed -i "s|tes3mp.lua,chat_parser.lua|server.lua|g" $KEEPERS/tes3mp-server-default.cfg
+sed -i "s|Y #key for switch chat mode enabled/hidden/disabled|Left Alt|g" $KEEPERS/tes3mp-client-default.cfg
+
 
 #BUILD RAKNET
 mkdir $DEPENDENCIES/raknet/build

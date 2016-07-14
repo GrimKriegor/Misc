@@ -22,8 +22,7 @@ echo -e "\n\n\n>> Checking which GNU/Linux distro is installed"
 case $DISTRO in
   "arch" | "parabola" )
       echo -e "\nYou seem to be running either Arch Linux or Parabola GNU/Linux-libre"
-      sudo pacman -Sy
-      sudo pacman -S git cmake boost openal openscenegraph mygui bullet qt5-base ffmpeg sdl2 unshield libxkbcommon-x11 gcc-libs ;; #clang35 llvm35
+      sudo pacman -Sy git cmake boost openal openscenegraph mygui bullet qt5-base ffmpeg sdl2 unshield libxkbcommon-x11 gcc-libs ;; #clang35 llvm35
 
   "debian" | "ubuntu" | "linuxmint" )
       echo -e "\nYou seem to be running either Debian, Ubuntu or Mint"

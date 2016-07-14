@@ -17,6 +17,8 @@ DEPENDENCIES=$BASE/dependencies
 RAKNET_LOCATION="$DEPENDENCIES/raknet"
 TERRA_LOCATION="$DEPENDENCIES/terra"
 
+#PULL CODE CHANGES FROM GIT
+echo -e "\n\n\n>> Pulling code changes from git"
 cd $CODE
 git pull
 cd $BASE
@@ -25,12 +27,13 @@ cd $BASE
 if [ "$1" = "--install" ]; then
   UPGRADE="YES"
 else
-  echo "Upgrade?"
+  echo -e "\n\nDo you wish the upgrade TES3MP?"
   read UPGRADE
 fi
 
 #REBUILD OPENMW/TES3MP
 if [ "$UPGRADE" = "YES" ]; then
+  echo -e "\n\n\n>> Doing a clean build of TES3MP"
 
   rm -r $DEVELOPMENT
   mkdir $DEVELOPMENT
@@ -42,6 +45,7 @@ if [ "$UPGRADE" = "YES" ]; then
 fi
 
 #CREATE SYMLINKS FOR THE CONFIG FILES INSIDE THE NEW BUILD FOLDER
+echo -e "\n\n\n>> Creating symlinks of the config files in the build folder"
 for file in $KEEPERS/*
 do
   FILEPATH=$file

@@ -21,17 +21,17 @@ mkdir $DEVELOPMENT $KEEPERS $DEPENDENCIES
 echo -e "\n\n\n>> Checking which GNU/Linux distro is installed"
 case $DISTRO in
   "arch" | "parabola" )
-      echo -e "\n\n\nYou seem to be running either Arch Linux or Parabola GNU/Linux-libre"
+      echo -e "\nYou seem to be running either Arch Linux or Parabola GNU/Linux-libre"
       sudo pacman -Sy
       sudo pacman -S git cmake boost openal openscenegraph mygui bullet qt5-base ffmpeg sdl2 unshield libxkbcommon-x11 gcc-libs ;; #clang35 llvm35
 
   "debian" | "ubuntu" | "linuxmint" )
-      echo -e "\n\n\nYou seem to be running either Debian, Ubuntu or Mint"
+      echo -e "\nYou seem to be running either Debian, Ubuntu or Mint"
       sudo apt-get update
       sudo apt-get install git libopenal-dev libopenscenegraph-dev libsdl2-dev libqt4-dev libboost-filesystem-dev libboost-thread-dev libboost-program-options-dev libboost-system-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev libbullet-dev libmygui-dev libunshield-dev cmake build-essential libqt4-opengl-dev g++ ;; #llvm-3.5 clang-3.5 libclang-3.5-dev llvm-3.5-dev
 
   "fedora" )
-      echo -e "\n\n\nYou seem to be running Fedora"
+      echo -e "\nYou seem to be running Fedora"
       sudo dnf --refresh groupinstall development-tools 
       sudo dnf --refresh install openal-devel OpenSceneGraph-qt-devel SDL2-devel qt4-devel boost-filesystem git boost-thread boost-program-options boost-system ffmpeg-devel ffmpeg-libs bullet-devel gcc-c++ mygui-devel unshield-devel tinyxml-devel cmake ;; #llvm35 llvm clang ncurses
 

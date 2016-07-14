@@ -47,8 +47,9 @@ cp $CODE/files/tes3mp/tes3mp-{client,server}-default.cfg $KEEPERS
 sed -i "s|~/ClionProjects/PS-dev|$KEEPERS/PluginExamples|g" $KEEPERS/tes3mp-server-default.cfg
 
 #DIRTY HACKS
-sed -i "s|tes3mp.lua,chat_parser.lua|server.lua|g" $KEEPERS/tes3mp-server-default.cfg
-sed -i "s|Y #key for switch chat mode enabled/hidden/disabled|Left Alt|g" $KEEPERS/tes3mp-client-default.cfg
+sed -i "s|tes3mp.lua,chat_parser.lua|server.lua|g" $KEEPERS/tes3mp-server-default.cfg #Fixes server scripts
+sed -i "s|Y #key for switch chat mode enabled/hidden/disabled|Left Alt|g" $KEEPERS/tes3mp-client-default.cfg #Changes chat key to Left Alt
+sed -i "s|mp.tes3mp.com|grimkriegor.zalkeen.pw|g" $KEEPERS/tes3mp-client-default.cfg #Sets Grim's server as the default
 
 
 #BUILD RAKNET

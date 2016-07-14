@@ -85,6 +85,7 @@ rm terra.zip
 
 cd $BASE
 
+#CALL upgrade.sh TO BUILD TES3MP
 echo -e "\n\n\nPreparing to build TES3MP"
 bash upgrade.sh --install
 

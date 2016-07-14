@@ -54,4 +54,6 @@ do
     ln -s "$KEEPERS/$FILENAME" "$DEVELOPMENT/"
 done
 
+#ALL DONE
+echo -e "\n\n\nAll done! Press any key to exit.
 read

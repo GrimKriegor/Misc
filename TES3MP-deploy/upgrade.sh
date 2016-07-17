@@ -27,7 +27,7 @@ cd $BASE
 if [ "$1" = "--install" ]; then
   UPGRADE="YES"
 else
-  echo -e "\n\nDo you wish the upgrade TES3MP?"
+  echo -e "\n\nDo you wish the upgrade TES3MP? (type YES to continue)"
   read UPGRADE
 fi
 
@@ -55,5 +55,5 @@ do
 done
 
 #ALL DONE
-echo -e "\n\n\nAll done! Press any key to exit.
+echo -e "\n\n\nAll done! Press any key to exit."
 read

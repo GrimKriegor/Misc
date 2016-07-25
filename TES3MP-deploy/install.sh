@@ -35,6 +35,13 @@ case $DISTRO in
 
   "fedora" )
       echo -e "You seem to be running Fedora"
+      echo -e "\nFedora users are required to enable the RPMFusion FREE and NON-FREE repositories\n\nType YES if you want the script to do it automatically\nIf you already have it enabled or want to do it manually (http://rpmfusion.org),\npress any key to continue"
+      read INPUT
+      if [ "$INPUT" == "YES" ]; then
+            echo -e "\nEnabling RPMFusion..."
+            su -c 'dnf install http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
+            echo -e "Done!"
+      fi
       sudo dnf --refresh groupinstall development-tools 
       sudo dnf --refresh install openal-devel OpenSceneGraph-qt-devel SDL2-devel qt4-devel boost-filesystem git boost-thread boost-program-options boost-system ffmpeg-devel ffmpeg-libs bullet-devel gcc-c++ mygui-devel unshield-devel tinyxml-devel cmake ;; #llvm35 llvm clang ncurses
 

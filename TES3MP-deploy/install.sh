@@ -26,16 +26,38 @@ echo -e "\n>> Checking which GNU/Linux distro is installed"
 case $DISTRO in
   "arch" | "parabola" )
       echo -e "You seem to be running either Arch Linux or Parabola GNU/Linux-libre"
-      sudo pacman -Sy git cmake boost openal openscenegraph mygui bullet qt5-base ffmpeg sdl2 unshield libxkbcommon-x11 gcc-libs ;; #clang35 llvm35
+      sudo pacman -Sy git cmake boost openal openscenegraph mygui bullet qt5-base ffmpeg sdl2 unshield libxkbcommon-x11 gcc-libs #clang35 llvm35
+  ;;
 
-  "debian" | "ubuntu" | "linuxmint" )
-      echo -e "You seem to be running either Debian, Ubuntu or Mint"
+  "debian" )
+      echo -e "You seem to be running Debian"
       sudo apt-get update
-      sudo apt-get install git libopenal-dev libopenscenegraph-dev libsdl2-dev libqt4-dev libboost-filesystem-dev libboost-thread-dev libboost-program-options-dev libboost-system-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev libbullet-dev libmygui-dev libunshield-dev cmake build-essential libqt4-opengl-dev g++ ;; #llvm-3.5 clang-3.5 libclang-3.5-dev llvm-3.5-dev
+      sudo apt-get install git libopenal-dev libsdl2-dev libqt4-dev libboost-filesystem-dev libboost-thread-dev libboost-program-options-dev libboost-system-dev libavcodec-dev
+      echo -e "\nDebian users are required to build OpenSceneGraph from source\nhttps://wiki.openmw.org/index.php?title=Development_Environment_Setup#Build_and_install_OSG\n\nType YES if you want the script to do it automatically (THIS IS BROKEN ATM)\nIf you already have it installed or want to do it manually,\npress ENTER to continue"
+      read INPUT
+      if [ "$INPUT" == "YES" ]; then
+            echo -e "\nOpenSceneGraph will be built from source"
+            BUILD_OSG=true
+            sudo apt-get build-dep openscenegraph libopenscenegraph-dev
+      fi
+  ;;
+
+  "ubuntu" | "linuxmint" )
+      echo -e "You seem to be running either Ubuntu or Mint"
+      echo -e "\nUbuntu and Mint users are required to enable the OpenMW PPA repository\nhttps://wiki.openmw.org/index.php?title=Development_Environment_Setup#Ubuntu\n\nType YES if you want the script to do it automatically\nIf you already have it enabled or want to do it manually,\npress ENTER to continue"
+      read INPUT
+      if [ "$INPUT" == "YES" ]; then
+            echo -e "\nEnabling the OpenMW PPA repository..."
+            sudo add-apt-repository ppa:openmw/openmw
+            echo -e "Done!"
+      fi
+      sudo apt-get update
+      sudo apt-get install git libopenal-dev libopenscenegraph-dev libsdl2-dev libqt4-dev libboost-filesystem-dev libboost-thread-dev libboost-program-options-dev libboost-system-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev libbullet-dev libmygui-dev libunshield-dev cmake build-essential libqt4-opengl-dev g++ #llvm-3.5 clang-3.5 libclang-3.5-dev llvm-3.5-dev
+  ;;
 
   "fedora" )
       echo -e "You seem to be running Fedora"
-      echo -e "\nFedora users are required to enable the RPMFusion FREE and NON-FREE repositories\n\nType YES if you want the script to do it automatically\nIf you already have it enabled or want to do it manually (http://rpmfusion.org),\npress any key to continue"
+      echo -e "\nFedora users are required to enable the RPMFusion FREE and NON-FREE repositories\nhttps://wiki.openmw.org/index.php?title=Development_Environment_Setup#Fedora_Workstation\n\nType YES if you want the script to do it automatically\nIf you already have it enabled or want to do it manually,\npress ENTER to continue"
       read INPUT
       if [ "$INPUT" == "YES" ]; then
             echo -e "\nEnabling RPMFusion..."
@@ -43,16 +65,19 @@ case $DISTRO in
             echo -e "Done!"
       fi
       sudo dnf --refresh groupinstall development-tools 
-      sudo dnf --refresh install openal-devel OpenSceneGraph-qt-devel SDL2-devel qt4-devel boost-filesystem git boost-thread boost-program-options boost-system ffmpeg-devel ffmpeg-libs bullet-devel gcc-c++ mygui-devel unshield-devel tinyxml-devel cmake ;; #llvm35 llvm clang ncurses
+      sudo dnf --refresh install openal-devel OpenSceneGraph-qt-devel SDL2-devel qt4-devel boost-filesystem git boost-thread boost-program-options boost-system ffmpeg-devel ffmpeg-libs bullet-devel gcc-c++ mygui-devel unshield-devel tinyxml-devel cmake #llvm35 llvm clang ncurses
+  ;;
 
   *)
-      echo -e "Could not determine your GNU/Linux distro, press any key to continue without installing dependencies"
-      read ;;
+      echo -e "Could not determine your GNU/Linux distro, press ENTER to continue without installing dependencies"
+      read
+  ;;
 esac
     
 #PULL SOFTWARE VIA GIT
 echo -e "\n>> Downloading software"
 git clone https://github.com/TES3MP/openmw-tes3mp.git "$CODE"
+if [ $BUILD_OSG ]; then git clone https://github.com/openscenegraph/OpenSceneGraph.git "$DEPENDENCIES"/osg; fi
 git clone https://github.com/OculusVR/RakNet.git "$DEPENDENCIES"/raknet
 #git clone https://github.com/zdevito/terra.git "$DEPENDENCIES"/terra
 wget https://github.com/zdevito/terra/releases/download/release-2016-02-26/terra-Linux-x86_64-2fa8d0a.zip -O "$DEPENDENCIES"/terra.zip
@@ -72,6 +97,18 @@ sed -i "s|tes3mp.lua,chat_parser.lua|server.lua|g" $KEEPERS/tes3mp-server-defaul
 sed -i "s|Y #key for switch chat mode enabled/hidden/disabled|Right Alt|g" $KEEPERS/tes3mp-client-default.cfg #Changes the chat key
 sed -i "s|mp.tes3mp.com|grimkriegor.zalkeen.pw|g" $KEEPERS/tes3mp-client-default.cfg #Sets Grim's server as the default
 
+
+#BUILD OPENSCENEGRAPH
+if [ $BUILD_OSG ]; then
+    echo -e "\n>> Building OpenSceneGraph"
+    mkdir "$DEPENDENCIES"/osg/build
+    cd "$DEPENDENCIES"/osg/build
+    git checkout tags/OpenSceneGraph-3.4.0
+    cmake ..
+    make -j$CORES
+
+    cd "$BASE"
+fi
 
 #BUILD RAKNET
 echo -e "\n>> Building RakNet"

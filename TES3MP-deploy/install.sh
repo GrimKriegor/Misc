@@ -97,7 +97,6 @@ sed -i "s|tes3mp.lua,chat_parser.lua|server.lua|g" $KEEPERS/tes3mp-server-defaul
 sed -i "s|Y #key for switch chat mode enabled/hidden/disabled|Right Alt|g" $KEEPERS/tes3mp-client-default.cfg #Changes the chat key
 sed -i "s|mp.tes3mp.com|grimkriegor.zalkeen.pw|g" $KEEPERS/tes3mp-client-default.cfg #Sets Grim's server as the default
 
-
 #BUILD OPENSCENEGRAPH
 if [ $BUILD_OSG ]; then
     echo -e "\n>> Building OpenSceneGraph"
@@ -116,6 +115,7 @@ mkdir "$DEPENDENCIES"/raknet/build
 cd "$DEPENDENCIES"/raknet/build
 cmake -DCMAKE_BUILD_TYPE=Release -DRAKNET_ENABLE_DLL=OFF -DRAKNET_ENABLE_SAMPLES=OFF -DRAKNET_ENABLE_STATIC=ON -DRAKNET_GENERATE_INCLUDE_ONLY_DIR=ON ..
 make -j$CORES
+ln -s "$DEPENDENCIES"/raknet/include/RakNet "$DEPENDENCIES"/raknet/include/raknet #Stop being so case sensitive
 
 cd "$BASE"
 

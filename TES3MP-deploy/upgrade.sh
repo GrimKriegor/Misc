@@ -48,7 +48,7 @@ if [ "$UPGRADE" = "YES" ]; then
 
   if [ $BUILD_OSG ]; then
     cmake "$CODE" -DBUILD_OPENCS=OFF \
-                  -DRakNet_INCLUDES="${RAKNET_LOCATION}"/include/RakNet \
+                  -DRakNet_INCLUDES="${RAKNET_LOCATION}"/include \
                   -DRakNet_LIBRARY_DEBUG="${RAKNET_LOCATION}"/build/Lib/LibStatic/libRakNetLibStatic.a \
                   -DRakNet_LIBRARY_RELEASE="${RAKNET_LOCATION}"/build/Lib/LibStatic/libRakNetLibStatic.a \
                   -DTerra_INCLUDES="${TERRA_LOCATION}"/include \
@@ -76,7 +76,7 @@ if [ "$UPGRADE" = "YES" ]; then
                   #THIS IS STILL A WORK IN PROGRESS ^
   else
     cmake "$CODE" -DBUILD_OPENCS=OFF \
-                  -DRakNet_INCLUDES="${RAKNET_LOCATION}"/include/RakNet \
+                  -DRakNet_INCLUDES="${RAKNET_LOCATION}"/include \
                   -DRakNet_LIBRARY_DEBUG="${RAKNET_LOCATION}"/build/Lib/LibStatic/libRakNetLibStatic.a \
                   -DRakNet_LIBRARY_RELEASE="${RAKNET_LOCATION}"/build/Lib/LibStatic/libRakNetLibStatic.a \
                   -DTerra_INCLUDES="${TERRA_LOCATION}"/include \

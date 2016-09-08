@@ -24,8 +24,8 @@ mkdir "$DEVELOPMENT" "$KEEPERS" "$DEPENDENCIES"
 #CHECK DISTRO AND INSTALL DEPENDENCIES
 echo -e "\n>> Checking which GNU/Linux distro is installed"
 case $DISTRO in
-  "arch" | "parabola" )
-      echo -e "You seem to be running either Arch Linux or Parabola GNU/Linux-libre"
+  "arch" | "parabola" | "manjarolinux" )
+      echo -e "You seem to be running either Arch Linux, Parabola GNU/Linux-libre or Manjaro"
       sudo pacman -Sy git cmake boost openal openscenegraph mygui bullet qt5-base ffmpeg sdl2 unshield libxkbcommon-x11 gcc-libs #clang35 llvm35
   ;;
 

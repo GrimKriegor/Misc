@@ -26,7 +26,17 @@ echo -e "\n>> Checking which GNU/Linux distro is installed"
 case $DISTRO in
   "arch" | "parabola" | "manjarolinux" )
       echo -e "You seem to be running either Arch Linux, Parabola GNU/Linux-libre or Manjaro"
-      sudo pacman -Sy git cmake boost openal openscenegraph mygui bullet qt5-base ffmpeg sdl2 unshield libxkbcommon-x11 gcc-libs #clang35 llvm35
+      sudo pacman -Sy git cmake boost openal openscenegraph mygui bullet qt5-base ffmpeg sdl2 unshield libxkbcommon-x11 ncurses #clang35 llvm35
+
+      if [ ! -d "/usr/share/licenses/gcc-libs-multilib/" ]; then
+            sudo pacman -S gcc-libs
+      fi
+
+      echo -e "\nCreating symlinks for ncurses compatibility"
+      LIBTINFO_VER=6
+      NCURSES_VER="$(pacman -Q ncurses | awk '{sub(/-[0-9]+/, "", $2); print $2}')"
+      sudo ln -s /usr/lib/libncursesw.so."$NETCURSES_VER" /usr/lib/libtinfo.so."$LIBTINFO_VER" 2> /dev/null
+      sudo ln -s /usr/lib/libtinfo.so."$LIBTINFO_VER" /usr/lib/libtinfo.so 2> /dev/null
   ;;
 
   "debian" )

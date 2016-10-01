@@ -1,3 +1,5 @@
+#Default i9100's partition table
+
 mmc0      > **GANG**               - emmc.img - Entire flash
 
 mbr       > **BOOT** [512B]        - boot.bin - Primary bootloader
@@ -22,6 +24,6 @@ mmc0blk9  > **FACTORYFS** [512MiB] - factoryfs.img / system.img - /system
 
 mmc0blk10 > **DATAFS** [2000MiB]   - data.img - /data partition
 
-mmc0blk11 > **UMS** [14000MiB]     - null - /sdcard0
+mmc0blk11 > **UMS** [12500MiB]     - null - /sdcard0
 
 mmc0blk12 > **HIDDEN** [512MiB]    - hidden.img - Preloaded stock apks

@@ -39,17 +39,18 @@ case $DISTRO in
       sudo ln -s /usr/lib/libtinfo.so."$LIBTINFO_VER" /usr/lib/libtinfo.so 2> /dev/null
   ;;
 
-  "debian" )
-      echo -e "You seem to be running Debian"
+  "debian" | "devuan" )
+      echo -e "You seem to be running Debian or Devuan"
       sudo apt-get update
-      sudo apt-get install git libopenal-dev libsdl2-dev libqt4-dev libboost-filesystem-dev libboost-thread-dev libboost-program-options-dev libboost-system-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev libbullet-dev libmygui-dev libunshield-dev cmake build-essential libqt4-opengl-dev g++ libncurses5-dev
-      echo -e "\nDebian users are required to build OpenSceneGraph from source\nhttps://wiki.openmw.org/index.php?title=Development_Environment_Setup#Build_and_install_OSG\n\nType YES if you want the script to do it automatically (THIS IS BROKEN ATM)\nIf you already have it installed or want to do it manually,\npress ENTER to continue"
-      read INPUT
-      if [ "$INPUT" == "YES" ]; then
-            echo -e "\nOpenSceneGraph will be built from source"
-            BUILD_OSG=true
-            sudo apt-get build-dep openscenegraph libopenscenegraph-dev
-      fi
+      sudo apt-get install git libopenal-dev qt5-default libopenscenegraph-3.4-dev libsdl2-dev libqt4-dev libboost-filesystem-dev libboost-thread-dev libboost-program-options-dev libboost-system-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev libmygui-dev libunshield-dev cmake build-essential libqt4-opengl-dev g++ libncurses5-dev #libbullet-dev
+      #echo -e "\nDebian users are required to build OpenSceneGraph from source\nhttps://wiki.openmw.org/index.php?title=Development_Environment_Setup#Build_and_install_OSG\n\nType YES if you want the script to do it automatically (THIS IS BROKEN ATM)\nIf you already have it installed or want to do it manually,\npress ENTER to continue"
+      #read INPUT
+      #if [ "$INPUT" == "YES" ]; then
+      #      echo -e "\nOpenSceneGraph will be built from source"
+      #      BUILD_OSG=true
+      #      sudo apt-get build-dep openscenegraph libopenscenegraph-dev
+      #fi
+      BUILD_BULLET=true
   ;;
 
   "ubuntu" | "linuxmint" )
@@ -62,7 +63,8 @@ case $DISTRO in
             echo -e "Done!"
       fi
       sudo apt-get update
-      sudo apt-get install git libopenal-dev libopenscenegraph-3.4-dev libsdl2-dev libqt4-dev libboost-filesystem-dev libboost-thread-dev libboost-program-options-dev libboost-system-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev libbullet-dev libmygui-dev libunshield-dev cmake build-essential libqt4-opengl-dev g++ libncurses5-dev #llvm-3.5 clang-3.5 libclang-3.5-dev llvm-3.5-dev
+      sudo apt-get install git libopenal-dev qt5-default libopenscenegraph-3.4-dev libsdl2-dev libqt4-dev libboost-filesystem-dev libboost-thread-dev libboost-program-options-dev libboost-system-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev libmygui-dev libunshield-dev cmake build-essential libqt4-opengl-dev g++ libncurses5-dev #llvm-3.5 clang-3.5 libclang-3.5-dev llvm-3.5-dev libbullet-dev
+      BUILD_BULLET=true
   ;;
 
   "fedora" )
@@ -88,6 +90,7 @@ esac
 echo -e "\n>> Downloading software"
 git clone https://github.com/TES3MP/openmw-tes3mp.git "$CODE"
 if [ $BUILD_OSG ]; then git clone https://github.com/openscenegraph/OpenSceneGraph.git "$DEPENDENCIES"/osg; fi
+if [ $BUILD_BULLET ]; then git clone https://github.com/bulletphysics/bullet3.git "$DEPENDENCIES"/bullet; fi
 git clone https://github.com/OculusVR/RakNet.git "$DEPENDENCIES"/raknet
 #git clone https://github.com/zdevito/terra.git "$DEPENDENCIES"/terra
 wget https://github.com/zdevito/terra/releases/download/release-2016-02-26/terra-Linux-x86_64-2fa8d0a.zip -O "$DEPENDENCIES"/terra.zip
@@ -113,9 +116,23 @@ if [ $BUILD_OSG ]; then
     mkdir "$DEPENDENCIES"/osg/build
     cd "$DEPENDENCIES"/osg/build
     git checkout tags/OpenSceneGraph-3.4.0
+    rm CMakeCache.txt
     cmake ..
     make -j$CORES
 
+    cd "$BASE"
+fi
+
+#BUILD BULLET
+if [ $BUILD_BULLET ]; then
+    echo -e "\n>> Building Bullet Physics"
+    mkdir "$DEPENDENCIES"/bullet/build
+    cd "$DEPENDENCIES"/bullet/build
+    git checkout tags/2.86.1
+    rm CMakeCache.txt
+    cmake -DBUILD_PYBULLET=OFF -DBUILD_PYBULLET_NUMPY=OFF -DUSE_DOUBLE_PRECISION=ON -DCMAKE_BUILD_TYPE=Release ..
+    make -j$BORES
+    
     cd "$BASE"
 fi
 
@@ -123,6 +140,7 @@ fi
 echo -e "\n>> Building RakNet"
 mkdir "$DEPENDENCIES"/raknet/build
 cd "$DEPENDENCIES"/raknet/build
+rm CMakeCache.txt
 cmake -DCMAKE_BUILD_TYPE=Release -DRAKNET_ENABLE_DLL=OFF -DRAKNET_ENABLE_SAMPLES=OFF -DRAKNET_ENABLE_STATIC=ON -DRAKNET_GENERATE_INCLUDE_ONLY_DIR=ON ..
 make -j$CORES
 ln -s "$DEPENDENCIES"/raknet/include/RakNet "$DEPENDENCIES"/raknet/include/raknet #Stop being so case sensitive

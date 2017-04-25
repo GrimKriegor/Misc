@@ -10,11 +10,11 @@ DEFAULT_INTERVAL=5
 
 PLOT_SCRIPT="\
 set title \"Battery capacity over time\"
-set xlabel \"Time (s)\"
+set xlabel \"Time (minutes)\"
 set ylabel \"Capacity (%)\"
 set terminal png size 600,500 enhanced font \"Liberation Sans,9\"
 set output \"battery-graph.png\"
-plot \"battery.table\" using 1:2 with lines\
+plot \"battery.table\" using (\$1/60.0):2 with lines\
 "
 
 if [ "$1" == "" ]; then

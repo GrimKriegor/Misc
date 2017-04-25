@@ -50,6 +50,7 @@ case $DISTRO in
       #      BUILD_OSG=true
       #      sudo apt-get build-dep openscenegraph libopenscenegraph-dev
       #fi
+      sudo apt-get build-dep bullet
       BUILD_BULLET=true
   ;;
 
@@ -64,6 +65,7 @@ case $DISTRO in
       fi
       sudo apt-get update
       sudo apt-get install git libopenal-dev qt5-default libopenscenegraph-3.4-dev libsdl2-dev libqt4-dev libboost-filesystem-dev libboost-thread-dev libboost-program-options-dev libboost-system-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev libmygui-dev libunshield-dev cmake build-essential libqt4-opengl-dev g++ libncurses5-dev #llvm-3.5 clang-3.5 libclang-3.5-dev llvm-3.5-dev libbullet-dev
+      sudo apt-get build-dep bullet
       BUILD_BULLET=true
   ;;
 
@@ -130,7 +132,7 @@ if [ $BUILD_BULLET ]; then
     cd "$DEPENDENCIES"/bullet/build
     git checkout tags/2.86.1
     rm CMakeCache.txt
-    cmake -DBUILD_PYBULLET=OFF -DBUILD_PYBULLET_NUMPY=OFF -DUSE_DOUBLE_PRECISION=ON -DCMAKE_BUILD_TYPE=Release ..
+    cmake -DBUILD_SHARED_LIBS=ON -DINSTALL_LIBS=ON -DINSTALL_EXTRA_LIBS=ON -DBUILD_PYBULLET=OFF -DBUILD_PYBULLET_NUMPY=OFF -DBUILD_OPENGL3_DEMOS=OFF -DUSE_DOUBLE_PRECISION=ON -DCMAKE_BUILD_TYPE=Release ..
     make -j$BORES
     
     cd "$BASE"

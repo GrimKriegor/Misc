@@ -16,12 +16,15 @@ DEPENDENCIES="$BASE/dependencies"
 
 if [ -d "$DEPENDENCIES"/osg ]; then
   BUILD_OSG=true
+elif [ -d "$DEPENDENCIES"/bullet ]; then
+  BUILD_BULLET=true
 fi
 
 #LOCATIONS OF RAKNET AND TERRA
 RAKNET_LOCATION="$DEPENDENCIES"/raknet
 TERRA_LOCATION="$DEPENDENCIES"/terra
 if [ $BUILD_OSG ]; then OSG_LOCATION="$DEPENDENCIES"/osg; fi
+if [ $BUILD_BULLET ]; then BULLET_LOCATION="$DEPENDENCIES"/bullet; fi
 
 #PULL CODE CHANGES FROM GIT
 echo -e "\n>> Pulling code changes from git"
@@ -46,43 +49,44 @@ if [ "$UPGRADE" = "YES" ]; then
 
   cd "$DEVELOPMENT"
 
+  CMAKE_PARAMS="-DBUILD_OPENCS=OFF \
+      -DRakNet_INCLUDES="${RAKNET_LOCATION}"/include \
+      -DRakNet_LIBRARY_DEBUG="${RAKNET_LOCATION}"/build/Lib/LibStatic/libRakNetLibStatic.a \
+      -DRakNet_LIBRARY_RELEASE="${RAKNET_LOCATION}"/build/Lib/LibStatic/libRakNetLibStatic.a \
+      -DTerra_INCLUDES="${TERRA_LOCATION}"/include \
+      -DTerra_LIBRARY_RELEASE="${TERRA_LOCATION}"/lib/libterra.a"
+
   if [ $BUILD_OSG ]; then
-    cmake "$CODE" -DBUILD_OPENCS=OFF \
-                  -DRakNet_INCLUDES="${RAKNET_LOCATION}"/include \
-                  -DRakNet_LIBRARY_DEBUG="${RAKNET_LOCATION}"/build/Lib/LibStatic/libRakNetLibStatic.a \
-                  -DRakNet_LIBRARY_RELEASE="${RAKNET_LOCATION}"/build/Lib/LibStatic/libRakNetLibStatic.a \
-                  -DTerra_INCLUDES="${TERRA_LOCATION}"/include \
-                  -DTerra_LIBRARY_RELEASE="${TERRA_LOCATION}"/lib/libterra.a \
-                  -DOPENTHREADS_INCLUDE_DIR="${OSG_LOCATION}"/include \
-                  -DOPENTHREADS_LIBRARY="${OSG_LOCATION}"/build/lib/libOpenThreads.so \
-                  -DOSG_INCLUDE_DIR="${OSG_LOCATION}"/include \
-                  -DOSG_LIBRARY="${OSG_LOCATION}"/build/lib/libosg.so \
-                  -DOSGANIMATION_INCLUDE_DIR="${OSG_LOCATION}"/include \
-                  -DOSGANIMATION_LIBRARY="${OSG_LOCATION}"/build/lib/libosgAnimation.so \
-                  -DOSGDB_INCLUDE_DIR="${OSG_LOCATION}"/include \
-                  -DOSGDB_LIBRARY="${OSG_LOCATION}"/build/lib/libosgDB.so \
-                  -DOSGFX_INCLUDE_DIR="${OSG_LOCATION}"/include \
-                  -DOSGFX_LIBRARY="${OSG_LOCATION}"/build/lib/libosgFX.so \
-                  -DOSGGA_INCLUDE_DIR="${OSG_LOCATION}"/include \
-                  -DOSGGA_LIBRARY="${OSG_LOCATION}"/build/lib/libosgGA.so \
-                  -DOSGPARTICLE_INCLUDE_DIR="${OSG_LOCATION}"/include \
-                  -DOSGPARTICLE_LIBRARY="${OSG_LOCATION}"/build/lib/libosgParticle.so \
-                  -DOSGTEXT_INCLUDE_DIR="${OSG_LOCATION}"/include \
-                  -DOSGTEXT_LIBRARY="${OSG_LOCATION}"/build/lib/libosgText.so\
-                  -DOSGUTIL_INCLUDE_DIR="${OSG_LOCATION}"/include \
-                  -DOSGUTIL_LIBRARY="${OSG_LOCATION}"/build/lib/libosgUtil.so \
-                  -DOSGVIEWER_INCLUDE_DIR="${OSG_LOCATION}"/include \
-                  -DOSGVIEWER_LIBRARY="${OSG_LOCATION}"/build/lib/libosgViewer.so
-                  #THIS IS STILL A WORK IN PROGRESS ^
-  else
-    cmake "$CODE" -DBUILD_OPENCS=OFF \
-                  -DRakNet_INCLUDES="${RAKNET_LOCATION}"/include \
-                  -DRakNet_LIBRARY_DEBUG="${RAKNET_LOCATION}"/build/Lib/LibStatic/libRakNetLibStatic.a \
-                  -DRakNet_LIBRARY_RELEASE="${RAKNET_LOCATION}"/build/Lib/LibStatic/libRakNetLibStatic.a \
-                  -DTerra_INCLUDES="${TERRA_LOCATION}"/include \
-                  -DTerra_LIBRARY_RELEASE="${TERRA_LOCATION}"/lib/libterra.a
+    CMAKE_PARAMS="$CMAKE_PARAMS \
+      -DOPENTHREADS_INCLUDE_DIR="${OSG_LOCATION}"/include \
+      -DOPENTHREADS_LIBRARY="${OSG_LOCATION}"/build/lib/libOpenThreads.so \
+      -DOSG_INCLUDE_DIR="${OSG_LOCATION}"/include \
+      -DOSG_LIBRARY="${OSG_LOCATION}"/build/lib/libosg.so \
+      -DOSGANIMATION_INCLUDE_DIR="${OSG_LOCATION}"/include \
+      -DOSGANIMATION_LIBRARY="${OSG_LOCATION}"/build/lib/libosgAnimation.so \
+      -DOSGDB_INCLUDE_DIR="${OSG_LOCATION}"/include \
+      -DOSGDB_LIBRARY="${OSG_LOCATION}"/build/lib/libosgDB.so \
+      -DOSGFX_INCLUDE_DIR="${OSG_LOCATION}"/include \
+      -DOSGFX_LIBRARY="${OSG_LOCATION}"/build/lib/libosgFX.so \
+      -DOSGGA_INCLUDE_DIR="${OSG_LOCATION}"/include \
+      -DOSGGA_LIBRARY="${OSG_LOCATION}"/build/lib/libosgGA.so \
+      -DOSGPARTICLE_INCLUDE_DIR="${OSG_LOCATION}"/include \
+      -DOSGPARTICLE_LIBRARY="${OSG_LOCATION}"/build/lib/libosgParticle.so \
+      -DOSGTEXT_INCLUDE_DIR="${OSG_LOCATION}"/include \
+      -DOSGTEXT_LIBRARY="${OSG_LOCATION}"/build/lib/libosgText.so\
+      -DOSGUTIL_INCLUDE_DIR="${OSG_LOCATION}"/include \
+      -DOSGUTIL_LIBRARY="${OSG_LOCATION}"/build/lib/libosgUtil.so \
+      -DOSGVIEWER_INCLUDE_DIR="${OSG_LOCATION}"/include \
+      -DOSGVIEWER_LIBRARY="${OSG_LOCATION}"/build/lib/libosgViewer.so"
+  elif [ $BUILD_BULLET ]; then
+    CMAKE_PARAMS="$CMAKE_PARAMS \
+      -DBullet_INCLUDE_DIR="${BULLET_LOCATION}"/build/src \
+      -DBullet_BulletCollision_LIBRARY="${BULLET_LOCATION}"/build/src/Bullet3Collision \
+      -DBullet_LinearMath_LIBRARY="${BULLET_LOCATION}"/build/src/LinearMath"
   fi
 
+  echo -e "\n\n$CMAKE_PARAMS\n\n"
+  cmake "$CODE" $CMAKE_PARAMS
   make -j $CORES
 
 fi

@@ -83,6 +83,7 @@ if [ "$UPGRADE" = "YES" ]; then
       -DBullet_INCLUDE_DIR="${BULLET_LOCATION}"/build/src \
       -DBullet_BulletCollision_LIBRARY="${BULLET_LOCATION}"/build/src/Bullet3Collision \
       -DBullet_LinearMath_LIBRARY="${BULLET_LOCATION}"/build/src/LinearMath"
+    export BULLET_ROOT="${BULLET_LOCATION}"/build/src
   fi
 
   echo -e "\n\n$CMAKE_PARAMS\n\n"

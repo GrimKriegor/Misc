@@ -46,7 +46,7 @@ fi
 
 COUNT=0
 while true; do
-  LOAD=$(echo "scale=4; $(uptime | awk '{print $8}' | sed 's/,//')/$CORES*100" | bc -q)
+  LOAD=$(echo "scale=4; $(uptime | awk '{print $(NF-2)}' | sed 's/,//')/$CORES*100" | bc -q)
   uptime | tee -a "$LOG_FILE"
   echo $COUNT	$(cat "$BATTERY_FILE")	$LOAD | tee -a "$LOG_FILE"
   COUNT=$(($COUNT+$INTERVAL))

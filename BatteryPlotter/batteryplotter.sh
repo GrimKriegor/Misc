@@ -9,13 +9,15 @@ LOG_FILE="battery.log"
 DEFAULT_INTERVAL=5
 
 PLOT_SCRIPT="\
-set title \"Battery capacity over time\"
+set title \"Battery capacity and computer load over time\"
 set xlabel \"Time (minutes)\"
-set ylabel \"Capacity (%)\"
+set ylabel \"(%)\"
 set terminal png size 600,500 enhanced font \"Liberation Sans,9\"
 set output \"battery-graph.png\"
-plot \"battery.table\" using (\$1/60.0):2 with lines\
+plot for [col=2:3] \"battery.table\" using 1:col with lines title columnheader\
 "
+
+CORES=$(cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l)
 
 if [ "$1" == "" ]; then
   INTERVAL=$DEFAULT_INTERVAL
@@ -33,7 +35,8 @@ elif [ "$1" == "plot" ]; then
   exit 0
 
 elif [ "$1" == "clean" ]; then
-  awk 'NR % 2 == 0' "$LOG_FILE" > battery.table
+  echo "Time	Battery Capacity	Load" > battery.table
+  awk 'NR % 2 == 0' "$LOG_FILE" >> battery.table
   exit 0
 
 else
@@ -42,9 +45,10 @@ else
 fi
 
 COUNT=0
-while true; do 
+while true; do
+  LOAD=$(echo "scale=4; $(uptime | awk '{print $8}' | sed 's/,//')/$CORES*100" | bc -q)
   uptime | tee -a "$LOG_FILE"
-  echo $COUNT	$(cat "$BATTERY_FILE") | tee -a "$LOG_FILE"
+  echo $COUNT	$(cat "$BATTERY_FILE")	$LOAD | tee -a "$LOG_FILE"
   COUNT=$(($COUNT+$INTERVAL))
   sleep $INTERVAL
 done

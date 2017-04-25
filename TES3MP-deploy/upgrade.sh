@@ -2,7 +2,7 @@
 
 #NUMBER OF CPU CORES USED FOR COMPILATION
 if [ "$1" == "" ]; then
-    CORES=3
+    CORES="$(cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l)"
 else
     CORES="$1"
 fi
@@ -78,7 +78,9 @@ if [ "$UPGRADE" = "YES" ]; then
       -DOSGUTIL_LIBRARY="${OSG_LOCATION}"/build/lib/libosgUtil.so \
       -DOSGVIEWER_INCLUDE_DIR="${OSG_LOCATION}"/include \
       -DOSGVIEWER_LIBRARY="${OSG_LOCATION}"/build/lib/libosgViewer.so"
-  elif [ $BUILD_BULLET ]; then
+  fi
+  
+  if [ $BUILD_BULLET ]; then
     CMAKE_PARAMS="$CMAKE_PARAMS \
       -DBullet_INCLUDE_DIR="${BULLET_LOCATION}"/build/src \
       -DBullet_BulletCollision_LIBRARY="${BULLET_LOCATION}"/build/src/Bullet3Collision \

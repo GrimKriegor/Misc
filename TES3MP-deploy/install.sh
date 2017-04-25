@@ -2,7 +2,7 @@
 
 #NUMBER OF CPU CORES USED FOR COMPILATION
 if [ "$1" == "" ]; then
-    CORES=3
+    CORES="$(cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l)"
 else
     CORES="$1"
 fi
@@ -110,7 +110,7 @@ sed -i "s|~/ClionProjects/PS-dev|$KEEPERS/PluginExamples|g" $KEEPERS/tes3mp-serv
 echo -e "\n>> Applying some dirty hacks"
 sed -i "s|tes3mp.lua,chat_parser.lua|server.lua|g" $KEEPERS/tes3mp-server-default.cfg #Fixes server scripts
 sed -i "s|Y #key for switch chat mode enabled/hidden/disabled|Right Alt|g" $KEEPERS/tes3mp-client-default.cfg #Changes the chat key
-sed -i "s|mp.tes3mp.com|grimkriegor.zalkeen.pw|g" $KEEPERS/tes3mp-client-default.cfg #Sets Grim's server as the default
+sed -i "s|mp.tes3mp.com|grimkriegor.zalkeen.us|g" $KEEPERS/tes3mp-client-default.cfg #Sets Grim's server as the default
 
 #BUILD OPENSCENEGRAPH
 if [ $BUILD_OSG ]; then

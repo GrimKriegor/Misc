@@ -88,6 +88,11 @@ if [ "$UPGRADE" = "YES" ]; then
     export BULLET_ROOT="${BULLET_LOCATION}"/build/src
   fi
 
+  if [ $USE_CXX14 ]; then
+    CMAKE_PARAMS="$CMAKE_PARAMS \
+      -DCMAKE_CXX_STANDARD=14"
+  fi
+
   echo -e "\n\n$CMAKE_PARAMS\n\n"
   cmake "$CODE" $CMAKE_PARAMS
   make -j $CORES

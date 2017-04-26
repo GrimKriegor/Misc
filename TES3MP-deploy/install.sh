@@ -37,8 +37,6 @@ case $DISTRO in
       NCURSES_VER="$(pacman -Q ncurses | awk '{sub(/-[0-9]+/, "", $2); print $2}')"
       sudo ln -s /usr/lib/libncursesw.so."$NETCURSES_VER" /usr/lib/libtinfo.so."$LIBTINFO_VER" 2> /dev/null
       sudo ln -s /usr/lib/libtinfo.so."$LIBTINFO_VER" /usr/lib/libtinfo.so 2> /dev/null
-
-      USE_CXX14=true
   ;;
 
   "debian" | "devuan" )
@@ -113,6 +111,7 @@ echo -e "\n>> Applying some dirty hacks"
 sed -i "s|tes3mp.lua,chat_parser.lua|server.lua|g" $KEEPERS/tes3mp-server-default.cfg #Fixes server scripts
 sed -i "s|Y #key for switch chat mode enabled/hidden/disabled|Right Alt|g" $KEEPERS/tes3mp-client-default.cfg #Changes the chat key
 sed -i "s|mp.tes3mp.com|grimkriegor.zalkeen.us|g" $KEEPERS/tes3mp-client-default.cfg #Sets Grim's server as the default
+USE_CXX14=true #Forces the use of C++14
 
 #BUILD OPENSCENEGRAPH
 if [ $BUILD_OSG ]; then
@@ -134,8 +133,9 @@ if [ $BUILD_BULLET ]; then
     cd "$DEPENDENCIES"/bullet/build
     git checkout tags/2.86.1
     rm CMakeCache.txt
-    cmake -DBUILD_SHARED_LIBS=ON -DINSTALL_LIBS=ON -DINSTALL_EXTRA_LIBS=ON -DBUILD_PYBULLET=OFF -DBUILD_PYBULLET_NUMPY=OFF -DBUILD_OPENGL3_DEMOS=OFF -DUSE_DOUBLE_PRECISION=ON -DCMAKE_BUILD_TYPE=Release ..
+    cmake -DCMAKE_INSTALL_PREFIX="$DEPENDENCIES"/bullet/install -DBUILD_BULLET2_DEMOS=OFF -DBUILD_BULLET3=ON -DBUILD_CPU_DEMOS=OFF -DBUILD_EXTRAS=ON -DBUILD_OPENGL3_DEMOS=OFF -DBUILD_PYBULLET=OFF -DBUILD_SHARED_LIBS=ON -DBUILD_UNIT_TESTS=OFF -DBULLET2_USE_THREAD_LOCKS=OFF -DCMAKE_BUILD_TYPE=Release -DINSTALL_EXTRA_LIBS=ON -DINSTALL_LIBS=ON -DUSE_CUSTOM_VECTOR_MATH=OFF -DUSE_DOUBLE_PRECISION=ON -DUSE_GLUT=ON -DUSE_GRAPHICAL_BENCHMARK=OFF -DUSE_MSVC_INCREMENTAL_LINKING=OFF -DUSE_MSVC_RUNTIME_LIBRARY_DLL=OFF -DUSE_SOFT_BODY_MULTI_BODY_DYNAM=OFF ..
     make -j$CORES
+    make install
     
     cd "$BASE"
 fi

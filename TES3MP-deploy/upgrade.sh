@@ -82,9 +82,9 @@ if [ "$UPGRADE" = "YES" ]; then
   
   if [ $BUILD_BULLET ]; then
     CMAKE_PARAMS="$CMAKE_PARAMS \
-      -DBullet_INCLUDE_DIR="${BULLET_LOCATION}"/build/src \
-      -DBullet_BulletCollision_LIBRARY="${BULLET_LOCATION}"/build/src/Bullet3Collision \
-      -DBullet_LinearMath_LIBRARY="${BULLET_LOCATION}"/build/src/LinearMath"
+      -DBullet_INCLUDE_DIR="${BULLET_LOCATION}"/install/include/bullet \
+      -DBullet_BulletCollision_LIBRARY="${BULLET_LOCATION}"/install/lib/libBulletCollision.so \
+      -DBullet_LinearMath_LIBRARY="${BULLET_LOCATION}"/install/lib/libLinearMath.so"
     export BULLET_ROOT="${BULLET_LOCATION}"/build/src
   fi
 

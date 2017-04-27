@@ -80,6 +80,7 @@ case $DISTRO in
       fi
       sudo dnf --refresh groupinstall development-tools 
       sudo dnf --refresh install openal-devel OpenSceneGraph-qt-devel SDL2-devel qt4-devel boost-filesystem git boost-thread boost-program-options boost-system ffmpeg-devel ffmpeg-libs bullet-devel gcc-c++ mygui-devel unshield-devel tinyxml-devel cmake #llvm35 llvm clang ncurses
+      BUILD_BULLET=true
   ;;
 
   *)

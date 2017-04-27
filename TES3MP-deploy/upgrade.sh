@@ -16,7 +16,9 @@ DEPENDENCIES="$BASE/dependencies"
 
 if [ -d "$DEPENDENCIES"/osg ]; then
   BUILD_OSG=true
-elif [ -d "$DEPENDENCIES"/bullet ]; then
+fi
+
+if [ -d "$DEPENDENCIES"/bullet ]; then
   BUILD_BULLET=true
 fi
 
@@ -85,7 +87,8 @@ if [ "$UPGRADE" = "YES" ]; then
       -DBullet_INCLUDE_DIR="${BULLET_LOCATION}"/install/include/bullet \
       -DBullet_BulletCollision_LIBRARY="${BULLET_LOCATION}"/install/lib/libBulletCollision.so \
       -DBullet_LinearMath_LIBRARY="${BULLET_LOCATION}"/install/lib/libLinearMath.so"
-    export BULLET_ROOT="${BULLET_LOCATION}"/build/src
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH":"${BULLET_LOCATION}"/install/lib
+    export BULLET_ROOT="${BULLET_LOCATION}"/install
   fi
 
   if [ $USE_CXX14 ]; then

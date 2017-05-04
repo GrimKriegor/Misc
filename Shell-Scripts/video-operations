@@ -1,0 +1,165 @@
+#!/bin/bash
+
+echo -e "
+-------------------------------------------#
+   Video Organizer
+   by Grim Kriegor (grimkriegor@krutt.org)
+     Version 1.1 - 2013
+-------------------------------------------#
+\n\n\n
+"
+
+#Convert to MP4
+if [ "$1" == "--mp4" ]; then
+  EXTENSION=$(basename "$2" | awk -F . '{print $NF}')
+  FILENAME=$(basename --suffix=".$EXTENSION" "$2")
+
+  ffmpeg -i "$2" -vcodec libx264 -strict -2 "$FILENAME".mp4
+fi
+
+#Convert to MP3
+if [ "$1" == "--mp3" ]; then
+  if [ "$2" == "all" ]; then
+  
+    for file in "$(pwd)"/*
+    do
+      bash $0 --mp3 "$file"
+    done
+  else
+
+  EXTENSION=$(basename "$2" | awk -F . '{print $NF}')
+  FILENAME=$(basename --suffix=".$EXTENSION" "$2")
+
+  ffmpeg -i "$2" -vn -acodec mp3 -b:a 192k "$FILENAME".mp3
+  fi
+fi
+
+#Convert to Ogg
+if [ "$1" == "--ogg" ]; then
+  if [ "$2" == "all" ]; then
+  
+    for file in "$(pwd)"/*
+    do
+      bash $0 --ogg "$file"
+    done
+  else
+
+  EXTENSION=$(basename "$2" | awk -F . '{print $NF}')
+  FILENAME=$(basename --suffix=".$EXTENSION" "$2")
+
+  ffmpeg -i "$2" -vn -acodec libvorbis -b:a 192k "$FILENAME".ogg
+  fi
+fi
+
+#Compress (via MP4)
+if [ "$1" == "--compress" ]; then
+  if [ "$2" == "all" ]; then
+  
+    for file in "$(pwd)"/*
+    do
+      bash $0 --compress "$file"
+    done
+  else
+
+  EXTENSION=$(basename "$2" | awk -F . '{print $NF}')
+  FILENAME=$(basename --suffix=".$EXTENSION" "$2")
+
+  ffmpeg -i "$2" -acodec aac -strict -2 -b:a 128k -vcodec mpeg4 -b:v 2200k -filter:v scale=1024:-1 -flags +aic+mv4 "$FILENAME"c.mp4
+  fi
+fi
+
+#Compress (via KDENLIVE)
+if [ "$1" == "--compress2" ]; then
+  if [ "$2" == "all" ]; then
+  
+    for file in "$(pwd)"/*
+    do
+      bash $0 --compress2 "$file"
+    done
+  else
+
+  EXTENSION=$(basename "$2" | awk -F . '{print $NF}')
+  FILENAME=$(basename --suffix=".$EXTENSION" "$2")
+
+  #ffmpeg -i "$2" -acodec aac -strict -2 -b:a 128k -vcodec mpeg4 -b:v 2200k -filter:v scale=1024:-1 -flags +aic+mv4 "$FILENAME"c.mp4
+  /usr/bin/kdenlive_render /usr/bin/melt hdv_1080_30p avformat - "$2" "$FILENAME"c.mp4 properties=x264-medium g=120 crf=20 ab=160k an=1 threads=8 real_time=-1
+  fi
+fi
+
+#GIF to WEBM
+if [ "$1" == "--gif2webm" ]; then
+  if [ "$2" == "all" ]; then
+  
+    for file in "$(pwd)"/*
+    do
+      bash $0 --gif2webm "$file"
+    done
+  else
+
+  EXTENSION=$(basename "$2" | awk -F . '{print $NF}')
+  FILENAME=$(basename --suffix=".$EXTENSION" "$2")
+
+  ffmpeg -i "$2" -c:v libvpx -crf 12 -b:v 500K "$FILENAME".webm
+  fi
+fi
+
+#Create WEBM
+if [ "$1" == "--webm" ]; then
+  EXTENSION=$(basename "$2" | awk -F . '{print $NF}')
+  FILENAME=$(basename --suffix=".$EXTENSION" "$2")
+
+  ffmpeg -i "$2" -ss "$3" -to "$4" -c:v libvpx -crf 4 -b:v 1500K -vf scale=640:-1 -an "$FILENAME".webm
+fi
+
+#Compress (for N900)
+if [ "$1" == "--n900" ]; then
+  if [ "$2" == "all" ]; then
+  
+    for file in "$(pwd)"/*
+    do
+      bash $0 --compress "$file"
+    done
+  else
+
+  EXTENSION=$(basename "$2" | awk -F . '{print $NF}')
+  FILENAME=$(basename --suffix=".$EXTENSION" "$2")
+  
+  mencoder "$2"  \
+     -nosound \
+     -ovc x264 \
+     -x264encopts bitrate=300:nocabac:partitions=p8×8,b8×8,i4×4:level_idc=12:frameref=2:me=umh:bframes=0:nodeblock:noweightb:nomixed_refs \
+     -of rawvideo -o video-operations_temp.264
+
+  mencoder "$2"  \
+     -ovc copy \
+     -oac faac -faacopts br=40:mpeg=4:object=2 \
+     -af resample=32000:0:2,volume=4:1 \
+     -of rawaudio -o video-operations_temp.aac
+
+  MP4Box -new -add video-operations_temp.264 -add video-operations_temp.aac -fps 25.000 "$FILENAME"_n900.mp4
+
+  fi
+fi
+
+#Rotate
+# 0 = 90CounterCLockwise and Vertical Flip (default)
+# 1 = 90Clockwise
+# 2 = 90CounterClockwise
+# 3 = 90Clockwise and Vertical Flip
+
+if [ "$1" == "--rotate" ]; then
+
+  if [ "$3" == "all" ]; then
+  
+    for file in "$(pwd)"/*
+    do
+      bash $0 --rotate "$2" "$file"
+    done
+    else
+              EXTENSION=$(basename "$3" | awk -F . '{print $NF}')
+    FILENAME=$(basename --suffix=".$EXTENSION" "$3")
+    ffmpeg -i "$3" -threads 0 -c:a copy -vf "transpose=$2" -strict -2 "$FILENAME"r."$EXTENSION" && rm "$3"
+    fi
+fi
+
+rm *video-operations_temp.*

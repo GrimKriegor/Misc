@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Quick and dirty internal traffic shapping
+# GPLv3 - Grim Kriegor <grimkriegor@krutt.org> 2009
+
+INTERFACE="wlan0"
+
+#SPEEDS?
+DOWNKB=$1
+DOWN=$((DOWNKB * 8))
+
+UPKB=$2
+UP=$((UPKB * 8))
+
+#CLEAR LIMIT
+if [ "$1" == "-c" ]; then
+  echo
+  echo ">>> Removing limitation on $INTERFACE"
+  sudo wondershaper clear $INTERFACE
+
+#LIMIT
+else
+  if [ "$1" == "" ]; then
+    DOWN=300
+    DOWNKB=$((DOWN/8)) 
+  fi
+
+  if [ "$2" == "" ]; then
+    UP=800
+    UPKB=$((UP/8))
+  fi
+
+  echo ">>> Limiting $INTERFACE to:"
+  echo "-> $DOWNKB KiB/s (Download)"
+  echo "-> $UPKB KiB/s (Upload)"
+  sudo wondershaper $INTERFACE $DOWN $UP
+fi

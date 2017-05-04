@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+
+# Energy cost calculator
+# GPLv3 - Grim Kriegor <grimkriegor@krutt.org> 2015
+
+import sys
+
+PRICE = float(input("kWh price? (cents) "))
+POWER = float(input("Device power consumption? (Watts) "))
+TIME = float(input("How many hours per day? "))
+
+ENERGY = POWER * TIME / 1000
+COST = ENERGY * PRICE / 100
+
+print("\n\nYou will be paying %.2f€ daily" % COST)
+print("and %.2f€ monthly" % (COST*30))

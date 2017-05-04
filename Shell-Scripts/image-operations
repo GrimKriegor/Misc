@@ -1,0 +1,72 @@
+#!/bin/bash
+
+echo -e "
+-------------------------------------------#
+   Image Organizer
+   by Grim Kriegor (grimkriegor@krutt.org)
+     Version 0.8 - 2010
+-------------------------------------------#
+\n\n\n
+"
+HOWMANYJPG=0
+PWD=$(pwd | awk -F "/" '{print $NF}')
+
+for file in ./*
+do
+
+EXTENSION=$(echo "$file" | awk -F "." '{print $NF}')
+
+if [[ "$EXTENSION" = "JPG" || "$EXTENSION" = "jpg" || "$EXTENSION" = "png" || "$EXTENSION" = "bmp" || "$EXTENSION" = "pnm" ]]; then
+  
+  FILENAME=$(basename "$file")
+
+  HOWMANYJPG=$(($HOWMANYJPG+1))
+
+  echo ------------------
+  echo ">>>" $FILENAME
+  echo
+
+    #COMPRESS
+    if [ "$1" == "--compress-phatch" ]; then
+      #mkdir jpgoperations_compressed
+      phatch --console "/home/$(whoami)/Supervient/Alsythru/.compressjpg.phatch" "$file"
+      echo "-----------> Compressing the JPG"
+      echo $(du -s -h "$file") "->" $(du -s -h "../${PWD}_phatch/$FILENAME"); echo
+    fi
+
+    #COMPRESS with imagemagick
+    if [ "$1" == "--compress" ]; then
+      if [ ! -d "./Compressed" ]; then mkdir ./Compressed; fi
+      convert -colorspace sRGB -strip -interlace Plane -quality 70% "$file" "./Compressed/$FILENAME" #-gaussian-blur 0.05
+      echo "-----------> Compressing the JPG"
+      echo $(du -s -h "$file") "->" $(du -s -h "./Compressed/$FILENAME"); echo
+                        if [ "$2" == "overwrite" ]; then
+                          echo "Overwriting"
+        mv "./Compressed/$FILENAME" .
+                                rm -r ./Compressed
+      fi
+    fi
+
+    #Crop border
+    if [ "$1" == "--crop" ]; then
+      if [ ! -d "./Cropped" ]; then mkdir ./Cropped; fi
+      convert -contrast -contrast -fuzz 60% -trim "$file" "./Cropped/$FILENAME"
+      echo "-----------> Croppy croping the JPG"
+      echo $(du -s -h "$file") "->" $(du -s -h "./Cropped/$FILENAME"); echo
+    fi
+
+    #Split in half
+    if [ "$1" == "--split" ]; then
+      if [ ! -d "./Splitted" ]; then mkdir ./Splitted; fi
+      convert -crop 50%x100% +repage "$file" ./Splitted/"$FILENAME"_%02d.$EXTENSION
+      echo "-----------> Splitting the JPG"
+    fi
+
+fi
+done
+
+if [ $HOWMANYJPG -eq 0 ]; then
+  echo ">>> No JPG files here!!!!"; echo
+else
+  echo ">>> $HOWMANYJPG JPG files converted :D"; echo
+fi

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Check connections
+# GPLv3 - Grim Kriegor <grimkriegor@krutt.org> 2009
+
+sudo netstat -an | grep 'tcp\|udp' | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -n 

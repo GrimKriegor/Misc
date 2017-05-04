@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+
+# RepRap print cost calculator
+# GPLv3 - Grim Kriegor <grimkriegor@krutt.org> 2015
+
+import sys
+
+# FIXED FILAMENT PARAMETERS
+FIXED_FILAMENT_PRICE = 18
+METERS_PER_KG = 350
+
+# FIXED ENERGY PARAMETERS
+KWH_PRICE = 17
+KWH_PRINTER = 0.045
+
+#PRICE_FILAMENT = float(input("Filament price (€/Kg) "))
+PRICE_FILAMENT = FIXED_FILAMENT_PRICE
+LENGTH = float(input("How many meters? (Meters) "))
+TIME = float(input("How long will it be printing? (Hours) "))
+
+COST_FILAMENT = PRICE_FILAMENT * LENGTH / METERS_PER_KG
+COST_ELECTRICITY = KWH_PRICE * KWH_PRINTER * TIME / 100
+COST_TOTAL = COST_FILAMENT + COST_ELECTRICITY
+
+print("\n\nYou will be paying %.2f€ for the filament," % COST_FILAMENT)
+print("and %.2f€ for the electricity costs." % COST_ELECTRICITY)
+print("\nTOTAL = %.2f€" % COST_TOTAL)

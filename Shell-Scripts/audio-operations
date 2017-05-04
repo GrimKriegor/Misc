@@ -1,0 +1,44 @@
+#!/bin/bash
+
+echo -e "
+-------------------------------------------#
+   Audio Organizer
+   by Grim Kriegor (grimkriegor@krutt.org)
+     Version 1.0 - 2015
+-------------------------------------------#
+\n\n\n
+"
+
+#Convert to MP3
+if [ "$1" == "--ogg-mp3" ]; then
+  if [ "$2" == "all" ]; then
+  
+    for file in "$(pwd)"/*.ogg
+    do
+      bash $0 --ogg-mp3 "$file"
+    done
+  else
+
+  EXTENSION=$(basename "$2" | awk -F . '{print $NF}')
+  FILENAME=$(basename --suffix=".$EXTENSION" "$2")
+
+  ffmpeg -i "$2" -vn -acodec mp3 -b:a 192k "$FILENAME".mp3 && rm "$FILENAME".ogg
+  fi
+fi
+
+#Convert to Ogg
+if [ "$1" == "--mp3-ogg" ]; then
+  if [ "$2" == "all" ]; then
+  
+    for file in "$(pwd)"/*.mp3
+    do
+      bash $0 --mp3-ogg "$file"
+    done
+  else
+
+  EXTENSION=$(basename "$2" | awk -F . '{print $NF}')
+  FILENAME=$(basename --suffix=".$EXTENSION" "$2")
+
+  ffmpeg -i "$2" -vn -acodec libvorbis -b:a 192k "$FILENAME".ogg && rm "$FILENAME".mp3
+  fi
+fi

@@ -1,0 +1,46 @@
+#!/bin/bash
+
+######################
+# - BACKUP SCRIPT -
+# rsync bash script
+# 2009 Feb
+######################
+
+DATE=$(date +"%b-%d-%y")
+HOUR=$(date +"%k:%M")
+SOURCE=$(pwd | awk -F "/" '{print $(NF-1)}')
+FOLDER=$(pwd | awk -F "/" '{print $(NF)}')
+
+#SPECIFICS
+DESTFOLDER=".Backup/$FOLDER"
+
+#ASK DEVICE
+echo ">> $FOLDER <<"; echo
+echo -e "to destination's: $DESTFOLDER\n\n"
+echo "============================"
+echo ">>> Source Device" 
+echo "$SOURCE"
+echo
+echo "============================"
+echo ">>> Destination Device?"
+read DEVICE
+
+
+if [ -d "/media/$DEVICE/" ]; then
+  echo ::::::::::::::::::::::::::::::::::::::::::::::::::::
+  echo -e "from:" $(pwd) "-> to ->" "/media/$DEVICE/$DESTFOLDER/\n\n"
+
+  rm "/media/$DEVICE/$DESTFOLDER/*.lstbkp"
+
+  rsync -r -t -p -o -g -v --progress --delete -l -s "." "/media/$DEVICE/$DESTFOLDER/"
+
+  echo $HOUR from $SOURCE > "/media/$DEVICE/$DESTFOLDER/$DATE.lstbkp"
+
+else
+  echo "NO SUCH DEVICE!! --- /media/$DEVICE/"
+  read
+  exit
+fi
+
+echo -e "\nDONE!"
+read

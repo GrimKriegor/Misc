@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Screencast utility wrapper
+# GPLv3 - Grim Kriegor <grimkriegor@krutt.org> 2011
+
+XRES=$(xrandr --current | grep '*' | uniq | awk '{print $1}' | cut -d 'x' -f1)
+YRES=$(xrandr --current | grep '*' | uniq | awk '{print $1}' | cut -d 'x' -f2)
+
+if [ ! -d /media/Auxiliary/Temporary ]; then
+  LOCATION=/media/Storage/Temporary/Screencast
+else
+  LOCATION=/media/Auxiliary/Temporary/Screencast
+fi
+
+mkdir $LOCATION 2>/dev/null
+
+if [ -z "$1" ];then
+  echo -e "No destination file specified...\nUsage: screencast <output>.mkv"
+
+elif [ -n "$cast" ];then
+  echo "Another Screencast session found, please kill it..."
+
+elif [ -n "$1" ] && [ -z "$cast" ];then
+  export cast=true
+
+  ffmpeg -f alsa -ac 2 -i pulse \
+  -f x11grab -r 30 -s $XRES:$YRES -i :0.0 \
+  -c:a libvorbis \
+  -c:v libx264 \
+  -preset ultrafast -crf 0 -threads 0 \
+  $LOCATION/$1.mkv
+fi

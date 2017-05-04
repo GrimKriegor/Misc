@@ -1,0 +1,135 @@
+#!/bin/bash
+
+###########################
+# Alsythru startup script
+# by Grim Kriegor (GNU GPLv3)
+#
+# Revision: 170426
+###########################
+
+shopt -s dotglob
+
+
+#Custom paths
+export SUPERVIENT="/media/Storage/Supervient"
+export ALSYTHRU="$SUPERVIENT/Alsythru"
+export STORAGE=/media/Storage
+export TEMPORARY=$STORAGE/Temporary
+export BUILD=$TEMPORARY/Build
+export DOWNLOAD=$TEMPORARY/Download
+export GAMES=$STORAGE/Games
+
+#Default programs
+export BROWSER="firefox"
+export EDITOR="vim"
+
+
+### === Relink FloatingHome === ###
+echo "-->> Updating FloatingHome"
+  
+  #HOME
+  for file in $ALSYTHRU/FloatingHome/{.*,*}
+  do
+    FILEPATH=$file
+    FILENAME=$(basename $file)
+    if [[ "$FILENAME" = ".config" || "$FILENAME"=".local" ]]; then
+      echo > /dev/null
+    else
+      echo "FLOATINGHOME >> $FILENAME"
+      rm "$HOME/$FILENAME"
+      ln -s "$ALSYTHRU/FloatingHome/$FILENAME" $HOME/
+    fi
+  done
+
+  #HOME/.config
+  for file in $ALSYTHRU/FloatingHome/.config/{.*,*}
+  do
+    FILEPATH=$file
+    FILENAME=$(basename $file)
+    echo "FLOATINGHOME >> $FILENAME"
+    rm "$HOME/.config/$FILENAME"
+    ln -s "$ALSYTHRU/FloatingHome/.config/$FILENAME" $HOME/.config/
+  done
+
+  ##HOME/.local/share
+  #for file in $ALSYTHRU/FloatingHome/.local/share/{.*,*}
+  #do
+  # FILEPATH=$file
+  #  FILENAME=$(basename $file)
+  #  echo "FLOATINGHOME >> $FILENAME"
+  #  rm "$HOME/.local/share/$FILENAME"
+  #  ln -s "$ALSYTHRU/FloatingHome/.config/$FILENAME" $HOME/.local/share/
+  #done
+
+
+### === Update Shell-Scripts === ###
+echo "-->> Updating Shell-Scripts"
+  echo "" > $ALSYTHRU/FloatingHome/.shell_aliases
+  for file in $ALSYTHRU/Shell-Scripts/*
+  do
+    FILEPATH=$file
+    FILENAME=$(basename $file)
+    echo "ALIAS >> $FILENAME >> $FILEPATH"
+    chmod +x "$FILEPATH"
+    echo alias $FILENAME=\'$FILEPATH\' >> $HOME/.shell_aliases
+  done
+
+
+### === Symbolic Links === ###
+echo "-->> Recreating Symbolic Links"
+
+#Fonts
+rm $HOME/.fonts 
+ln -s "$ALSYTHRU/Fonts" $HOME/.fonts
+
+#MIME-Scripts
+rm $HOME/.local/share/applications 
+ln -s "$ALSYTHRU/MIME-Scripts" $HOME/.local/share/applications
+
+#Guitarix
+rm $HOME/.config/guitarix 
+ln -s "$SUPERVIENT/Music/Guitarix" $HOME/.config/guitarix
+
+	
+### === TRICKERY === ###
+echo "-->> Trickery"
+rm $HOME/.recently-used.xbel && mkdir $HOME/.recently-used.xbel
+
+#Touchpad Hacking
+synclient VertEdgeScroll=1
+synclient TapButton1=0
+
+#Keyboard Layout
+setxkbmap -layout pt
+
+#NVIDIA Tearing
+nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 { ForceCompositionPipeline = On }"
+
+#Keyboard Remap
+#xmodmap -e 'keycode 58 = Escape'
+
+
+if [ "$1" == "" ]; then
+  ### === STARTUP PROGRAMS === ###
+  echo "-->> Starting up Programs"
+
+  ## Conky
+  sleep 30 && conky --config=$HOME/.conky/conkyrc &
+
+  ## Pulse Audio Tray
+  #pasystray &
+
+  ## Composite
+  #if [ -f $HOME/.composite ]; then 
+  #sleep 20 && xcompmgr &  fi
+
+  ## XFCE Power Manager
+  xfce4-power-manager &
+
+  ## Clipboard manager
+  #parcellite -n &
+
+fi
+
+
+sleep 10 && echo "Done loading Alsythru"

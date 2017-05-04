@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# CLI method for logging into FON's captive portal
+# GPLv3 - Grim Kriegor <grimkriegor@krutt.org>
+# 2017
+#
+# Original concept by Dllud on DD-WRT Forums
+# https://www.dd-wrt.com/phpBB2/viewtopic.php?p=878286
+
+
+#CONFIG
+LOGIN_FILE="$HOME/.fon-credentials.secret"
+
+if [ -f "$LOGIN_FILE" ]; then
+  source "$LOGIN_FILE"
+else
+  echo -e "No credentials found. Generating new one.\nEdit \"$LOGIN_FILE\" to add your credentials."
+  LOGIN_FILE_SKEL="USERNAME=\"NOS/changeme\"\nPASSWORD=\"changeme\""
+  echo -e "$LOGIN_FILE_SKEL" > "$LOGIN_FILE"
+  chmod 640 "$LOGIN_FILE"
+  exit 0
+fi
+
+ping -c 5 8.8.8.8 > /dev/null
+
+if [ $? -eq 0 ]; then
+  echo "Already Connected"
+  exit 0
+else
+  echo "Connecting..."
+  wget -qO- --output-document=portal.html --no-check-certificate --save-cookies=cookie --keep-session-cookies http://duckduckgo.com
+  POST_URL=$(cat portal.html | grep 'name="loginNos"' | cut -d \" -f 6 | sed s/amp\;//g)
+  if [ -n "$POST_URL" ]; then
+    POST_URL='https://captiveportal.nos.pt'$POST_URL
+    wget -qO- --output-document=/dev/null --no-check-certificate --load-cookies=cookie --keep-session-cookies --post-data="UserName=$USERNAME&Password=$PASSWORD&rememberMe=true" $POST_URL
+  fi
+  rm cookie portal.html
+fi

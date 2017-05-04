@@ -1,0 +1,89 @@
+#!/bin/bash
+
+echo -e "
+#-------------------------------------------#
+   Manga organizer
+   by Grim Kriegor (grimkriegor@krutt.org)
+     Version 1.0 - 2013
+#-------------------------------------------#
+\n\n\n
+"
+
+if [ "$1" = "-v" ]; then
+
+#No input
+if [ "$2" == "" ]; then
+echo "Usage: \$ mangavolume -v <FIRST VOLUME> <LAST VOLUME>"
+exit 0
+fi
+
+#Process user input parameters
+i=$2
+VOLUMENR=$3
+
+while [ $i -le $VOLUMENR ]
+do
+
+#Find with number fix
+if [ $i -lt 10 ]; then
+  find . -name "*Volume 0$i*" -print0 | xargs -0 zip -r "Volume $i.zip" -
+fi
+
+if [ $i -ge 10 ]; then
+  find . -name "*Volume $i*" -print0 | xargs -0 zip -r "Volume $i.zip" -
+fi
+
+#Change to cbz
+zip -d "$FILENAME.zip" "-" # remove that unexpected - file
+mv "Volume $i.zip" "Volume $i.cbz"
+#Announce
+echo "Volume $i.cbz is done!"
+#Increment
+i=$(($i + 1))
+
+done
+fi
+
+if [ "$1" = "-c" ]; then
+
+for file in "$(pwd)"/*
+do
+
+FILEPATH=$file
+FILENAME=$(basename "$file")
+
+       zip -r "$FILENAME".zip "$FILENAME"/*
+       mv "$FILENAME".zip "$FILENAME".cbz
+
+done
+fi #
+
+#Rename .zip to .cbz
+if [ "$1" = "-r" ]; then
+
+for file in "$(pwd)"/*
+do
+  EXTENSION=$(echo "$file" | awk -F "." '{print $NF}')
+  if [[ "$EXTENSION" = "ZIP" || "$EXTENSION" = "zip" ]]; then
+    FILENAME=$(basename -s .zip "$file")
+    echo $FILENAME
+          mv "$FILENAME".zip "$FILENAME".cbz  
+  fi
+done
+fi
+
+#Remove "-"
+if [ "$1" = "-fff" ]; then
+
+for file in "$(pwd)"/*
+do
+  EXTENSION=$(echo "$file" | awk -F "." '{print $NF}')
+  if [[ "$EXTENSION" = "CBZ" || "$EXTENSION" = "cbz" ]]; then
+    FILENAME=$(basename -s .cbz "$file")
+    echo $FILENAME
+    zip -d "$FILENAME.cbz" "-" # remove that unexpected - file
+  fi
+done
+fi
+
+echo Done

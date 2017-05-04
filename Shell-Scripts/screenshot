@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Screenshot wrapper
+# GPLv3 - Grim Kriegor <grimkriegor@krutt.org> 2012
+ 
+PATH=$HOME/Supervient/Screenshots/
+FILENAME=%Y-%m-%d-%T-screenshot.jpg
+QUALITY=75
+
+case "$1" in
+  "")
+    /usr/bin/scrot -q $QUALITY "$PATH"/"$FILENAME" ;;
+
+  "-s")
+    /usr/bin/scrot -s -q $QUALITY "$PATH"/"$FILENAME" ;; 
+esac

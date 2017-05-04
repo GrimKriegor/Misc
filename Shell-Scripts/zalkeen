@@ -1,0 +1,103 @@
+#!/bin/bash
+
+#################################################
+# Zalkeen Network                               #
+#-----------------------------------------------#
+# Auto SSH+SFTP connect script                  #
+# by Grim Kriegor (grimkriegor@krutt.org)       #
+#################################################
+# Last Revision: Mar 2017
+#################################################
+
+#Persistent Variables
+ONUSER=$(cat /etc/passwd | grep :${UID}: | cut -d ':' -f 1)
+ZALKEEN="zalkeen.us"
+DEFAULTMACHINE="unilanth"
+LOCALPROXY=6543
+
+#Help Text
+if [[ "$1" = "-h" || "$1" = "--help" ]]; then
+echo "Usage: zalkeen [machine] [user] [folder]"
+echo "Default is \"zalkeen nasther-sv $ONUSER /home/$ONUSER\""
+exit 0; fi
+#------------------------------------------------------------------
+
+#Default "MACHINE" Parameter
+if [[ "$1" = "" || "$1" = "-" ]]; then
+    MACHINE=$DEFAULTMACHINE
+else
+    MACHINE="$1"; fi
+
+#Default "USER" Parameter
+if [[ "$2" = "" || "$2" = "-" ]]; then
+    USER="$ONUSER"
+else
+    USER="$2"; fi
+
+#Default "FOLDER" Parameter
+if [ "$3" = "" ]; then
+    FOLDER="/home/$USER"
+else
+    FOLDER="$3"; fi
+
+#Machine Ports
+case "$MACHINE" in
+    "nasther-sv")
+        PORT="2944" ;;
+    "helbaster")
+        PORT="2675" ;;
+    * )
+        PORT="22"   ;;
+esac
+
+#Define Mountpoint
+if [ "$USER" = "$(whoami)" ]; then
+  #MOUNT=$HOME/mount/"$(echo $MACHINE | sed 's/[[:alpha:]]/\U&/')"
+  MOUNT=$HOME/mount/$MACHINE
+else
+  MOUNT=$HOME/mount/$USER\@$MACHINE
+fi
+
+#Pre-connection Info
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo ">>>>      Now connecting to Zalkeen Network      >>>>"
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo "Machine:	$MACHINE"
+echo "User:		$USER"
+echo "Remote Folder:	$FOLDER"
+echo "Local Folder:	$MOUNT"
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo "thru -> $MACHINE.$ZALKEEN:$PORT"; echo;echo
+
+#Check if the machine is in the local network, internet or vpn
+ping -c 3 "$MACHINE.lan" > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+  echo "Found machine on local network"
+  ADDRESS="$MACHINE.lan"
+  PORT=22
+else
+  ping -c 3 "$MACHINE.$ZALKEEN" > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    ADDRESS="$MACHINE.$ZALKEEN"
+  else
+    echo "Machine not accessible via the Internet, trying Zalkeen Network"
+    ADDRESS="$MACHINE.zalkeen"
+    PORT=22
+  fi
+  ping -c 3 "$ADDRESS" > /dev/null 2>&1 || ( echo "Couldnt connect. Is the Machine Down?" ; exit 1 )
+fi
+
+# SSHFS command ################################################
+if [ ! -d "$MOUNT" ]; then
+mkdir -p "$MOUNT"; fi
+
+sshfs -o transform_symlinks,follow_symlinks ${USER}@${ADDRESS}:${FOLDER} $MOUNT -p ${PORT}
+################################################################
+
+# SSH command ##################################################
+ssh ${ADDRESS} -p "$PORT" -l "$USER" -D "$LOCALPROXY" -X
+################################################################
+
+sleep 3
+
+fusermount -u "$MOUNT"

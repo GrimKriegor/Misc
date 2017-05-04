@@ -1,0 +1,23 @@
+#!/usr/bin/python
+
+# Download Reddit self post
+# GPLv3 - Grim Kriegor <grimkriegor@krutt.org> 2013
+
+import praw
+import sys
+
+def downloadPost(URL):
+    r = praw.Reddit('Download')
+
+    POST_OBJECT = r.get_submission(URL)
+    TITLE = str(POST_OBJECT.title)
+    AUTHOR = str(POST_OBJECT.author)
+    TEXT = str(POST_OBJECT.selftext)
+
+    f = open(TITLE.replace(".", "")+".txt","w")
+    f.write("> "+TITLE+"\n")
+    f.write("written by "+AUTHOR+"\n\n\n")
+    f.write("\n"+TEXT)
+    f.close()
+
+downloadPost(sys.argv[1])

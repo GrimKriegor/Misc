@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Ping an entire subnet and check out who is online
+# GPLv3 - Grim Kriegor <grimkriegor@krutt.org> 2008
+
+#INTERFACE?
+INTERFACE=$1
+
+if [ "$INTERFACE" = "" ]; then
+INTERFACE="wlan0"
+fi
+
+#GET IP
+INTERFACE_IP=$(ifconfig $INTERFACE | grep "inet " | awk '{print $2}' | sed 's/addr://')
+DELIM=$(echo $INTERFACE_IP | cut -d "." -f 4)
+GENIP=$(echo $INTERFACE_IP | awk -F ".$DELIM" '{print $1}')
+
+#START
+echo
+echo ">>> Looking for users on $INTERFACE"
+echo "mask = $GENIP.X"; echo
+
+#for ip in $(seq 1 254); do
+#echo - .$ip -; ping -c 1 -W 100 $GENIP.$ip>/dev/null; [ $? -eq 0 ] && echo "$GENIP.$ip is UP" || : ; done
+
+fping -a -g -s $GENIP.1 $GENIP.255 -r 1 > whoisthere.log
+echo ">> Alive Hosts:"
+cat whoisthere.log
+echo
+
+rm whoisthere.log
+
+sleep 2

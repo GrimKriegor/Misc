@@ -32,6 +32,7 @@ if [ $BUILD_BULLET ]; then BULLET_LOCATION="$DEPENDENCIES"/bullet; fi
 echo -e "\n>> Checking the git repository for changes"
 cd "$CODE"
 #git pull --dry-run | grep -q -v 'Already up-to-date.'
+git remote update
 test $(git rev-parse @) != $(git rev-parse @{u})
 if [ $? -eq 0 ]; then
   echo -e "\nNEW CHANGES on the git repository"

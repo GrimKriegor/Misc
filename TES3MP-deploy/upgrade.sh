@@ -51,7 +51,7 @@ elif [ "$2" = "--check-changes" ]; then
     exit 0
   fi
 else
-  echo -e "\nDo you wish the upgrade TES3MP? (type YES to continue)"
+  echo -e "\nDo you wish to rebuild TES3MP? (type YES to continue)"
   read UPGRADE
 fi
 

@@ -31,12 +31,12 @@ if [ $BUILD_BULLET ]; then BULLET_LOCATION="$DEPENDENCIES"/bullet; fi
 #CHECK IF THERE ARE CHANGES IN THE GIT REMOTE
 echo -e "\n>> Checking the git repository for changes"
 cd "$CODE"
-git status -uno --porcelain #Magic command
+git pull --dry-run | grep -q -v 'Already up-to-date.' #Magic command
 if [ $? -eq 0 ]; then
-  echo -e "\nThere are changes on the git repository"
+  echo -e "\nNEW CHANGES on the git repository"
   GIT_CHANGES=true
 else
-  echo -e "\nThere are no changes on the git repository"
+  echo -e "\nNo changes on the git repository"
 fi
 cd "$BASE"
 

@@ -28,15 +28,28 @@ TERRA_LOCATION="$DEPENDENCIES"/terra
 if [ $BUILD_OSG ]; then OSG_LOCATION="$DEPENDENCIES"/osg; fi
 if [ $BUILD_BULLET ]; then BULLET_LOCATION="$DEPENDENCIES"/bullet; fi
 
-#PULL CODE CHANGES FROM GIT
-echo -e "\n>> Pulling code changes from git"
+#CHECK IF THERE ARE CHANGES IN THE GIT REMOTE
+echo -e "\n>> Checking the git repository for changes"
 cd "$CODE"
-git pull
+git status -uno --porcelain #Magic command
+if [ $? -eq 0 ]; then
+  echo -e "\nThere are changes on the git repository"
+  GIT_CHANGES=true
+else
+  echo -e "\nThere are no changes on the git repository"
+fi
 cd "$BASE"
 
-#OPTION TO UPGRADE AFTER PULLING THE CHANGES FROM THE GIT REPOSITORY
+#OPTION TO UPGRADE
 if [ "$2" = "--install" ]; then
   UPGRADE="YES"
+elif [ "$2" = "--check-changes" ]; then
+  if [ $GIT_CHANGES ]; then
+    UPGRADE="YES"
+  else
+    echo -e "\nNo new commits, exiting."
+    exit 0
+  fi
 else
   echo -e "\nDo you wish the upgrade TES3MP? (type YES to continue)"
   read UPGRADE
@@ -44,6 +57,13 @@ fi
 
 #REBUILD OPENMW/TES3MP
 if [ "$UPGRADE" = "YES" ]; then
+
+  #PULL CODE CHANGES FROM THE GIT REPOSITORY
+  echo -e "\n>> Pulling code changes from git"
+  cd "$CODE"
+  git pull
+  cd "$BASE"
+
   echo -e "\n>> Doing a clean build of TES3MP"
 
   rm -r "$DEVELOPMENT"

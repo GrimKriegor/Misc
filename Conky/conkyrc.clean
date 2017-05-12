@@ -1,0 +1,242 @@
+#################################################
+# Conky Config                                  #
+# by Grim Kriegor (grimkriegor@krutt.org)       #
+#################################################
+# Last Revision: May 2017                       #
+#################################################
+
+# Use XFT? Required to Force UTF8 (see below)
+use_xft yes
+xftfont DroidSans:size=8.75
+xftalpha 0.1
+text_buffer_size 2048
+
+# Force UTF8? Requires XFT (see above)
+# Displays degree symbol, instead of Â°, etc.
+override_utf8_locale yes
+
+# Daemonize Conky, aka 'fork to background'.
+background yes
+
+# Update interval in seconds.
+update_interval 2
+
+# This is the number of times Conky will update before quitting.
+# Set to zero to run forever.
+total_run_times 0
+
+# Create own window instead of using desktop (required in nautilus)?
+own_window yes
+#own_window_type override
+own_window_type normal
+own_window_transparent yes
+own_window_hints undecorated,below,skip_taskbar,skip_pager,sticky #fixes cinnamon
+
+# Force images to redraw when they change.
+imlib_cache_size 0
+
+# Use double buffering? Reduces flicker.
+double_buffer yes
+
+##Draw shades?
+draw_shades no
+
+# Draw outlines?
+draw_outline no
+
+# Draw borders around text?
+draw_borders no
+
+# Draw borders around graphs?
+draw_graph_borders no
+
+# Print text to stdout?
+# Print text in console?
+out_to_ncurses no
+out_to_console no
+
+# Text alignment.
+alignment top_right
+
+# Minimum size of text area. 240 0
+minimum_size 240 1500
+maximum_width 250
+
+# Gap between text and screen borders.
+#vindsl-desktop-1-apr-2011.png 31
+gap_x 8
+gap_y 31
+
+# Shorten MiB/GiB to M/G in stats.
+short_units no
+
+# Pad % symbol spacing after numbers.
+pad_percents 0
+
+# Pad spacing between text and borders.
+border_inner_margin 10
+
+# Limit the length of names in "Top Processes".
+top_name_width 15
+
+# Subtract file system -/+buffers/cache from used memory?
+# Set to yes, to produce meaningful physical memory stats.
+no_buffers yes
+
+# Set to yes, if you want all text to be in UPPERCASE.
+uppercase no
+
+# Number of cpu samples to average.
+# Set to 1 to disable averaging.
+cpu_avg_samples 2
+
+# Number of net samples to average.
+# Set to 1 to disable averaging.
+net_avg_samples 2
+
+# Add spaces to keep things from moving around?
+# Only affects certain objects.
+use_spacer right
+
+# Shadding LUA script
+lua_load /home/user/.conky/draw_bg.lua
+lua_draw_hook_pre draw_bg
+
+# Default graph size
+default_graph_size 90 10
+
+TEXT
+##################################
+##            SYSTEM            ##
+##################################
+${voffset 4}${font DroidSans:bold:size=8.25}${color Tan1}${execi 600000 echo $(hostname | awk '{print toupper($0)}') }${offset 8}${color DarkSlateGray}${voffset -2}${hr 2}${font}
+${voffset 4}${font StyleBats:size=10}${color2}o${voffset -1}${font DroidSans:size=8.5}${color3} Kernel ${alignr}${sysname} ${kernel} (${machine})${font}
+${voffset 2}${font StyleBats:size=10}${color2}h${voffset -1}${font DroidSans:size=8.5}${color3} Load Avr${alignr}${execi 30 echo $(uptime | awk -F "average: " '{print $2}')} -- ${uptime_short}${font}
+${voffset 2}${font StyleBats:size=10}${color2}2${voffset -1}${font DroidSans:size=8.5}${color3} Temperature${alignr}CPU: ${execi 30 cat /sys/devices/platform/coretemp.0/hwmon/hwmon1/temp1_input|cut -b1-2}${execi 30 cat /sys/devices/platform/coretemp.0/hwmon/hwmon2/temp2_input|cut -b1-2}°${if_existing /home/user/.config/conky/nvidia} | GPU: ${execi 30 nvidia-settings -query GPUCoreTemp | perl -ne 'print $1 if /GPUCoreTemp.*?: (\d+)./;'} °${endif}${font}
+##################################
+##          PROCESSORS          ##
+##################################
+${voffset 6}${font DroidSans:bold:size=8}${color Tan1}CENTRAL PROCESSING${offset 8}${color DarkSlateGray}${voffset -2}${hr 2}${font}
+${if_existing /home/user/.config/conky/cpu2}\
+${voffset 4}${font StyleBats:size=9.9}${color2}k${font Monospace:size=8.39}${color3}${offset 5}${font DroidSans:size=8.3}${cpu cpu1}%  ${color green}${cpubar cpu1 7,40} ${cpugraph cpu1 10,160 ff0000 ff0000}${font}
+${voffset 4}${font StyleBats:size=9.9}${color2}k${font Monospace:size=8.39}${color3}${offset 5}${font DroidSans:size=8.3}${cpu cpu2}%  ${color green}${cpubar cpu2 7,40} ${cpugraph cpu2 10,160 ff0000 ff0000}${font}
+${endif}${if_existing /home/user/.config/conky/cpu4}\
+${voffset 4}${font StyleBats:size=9.9}${color2}k${font Monospace:size=8.39}${color3}${offset 5}${font DroidSans:size=8.3}${cpu cpu1}%  ${color green}${cpubar cpu1 7,40} ${cpugraph cpu1 10,160 ff0000 ff0000}${font}
+${voffset 4}${font StyleBats:size=9.9}${color2}k${font Monospace:size=8.39}${color3}${offset 5}${font DroidSans:size=8.3}${cpu cpu2}%  ${color green}${cpubar cpu2 7,40} ${cpugraph cpu2 10,160 ff0000 ff0000}${font}
+${voffset 4}${font StyleBats:size=9.9}${color2}k${voffset -2}${font Monospace:size=8.39}${color3}${offset 5}${font DroidSans:size=8.3}${cpu cpu3}%  ${color green}${cpubar cpu3 7,40} ${cpugraph cpu3 10,160 ff0000 ff0000}${font}
+${voffset 4}${font StyleBats:size=9.9}${color2}k${voffset -2}${font Monospace:size=8.39}${color3}${offset 5}${font DroidSans:size=8.3}${cpu cpu4}%  ${color green}${cpubar cpu4 7,40} ${cpugraph cpu4 10,160 ff0000 ff0000}${font}
+${endif}${if_existing /home/user/.config/conky/cpu8}\
+${voffset 4}${font StyleBats:size=9.9}${color2}k${voffset -2}${font Monospace:size=8.39}${color3}${offset 5}${font Monospace:size=8}${cpu cpu1}% ${color green}${cpubar cpu1 7,40} ${cpugraph cpu1 10,40 ff0000 ff0000} ${alignr}${color3}${cpu cpu2}% ${color green}${cpubar cpu2 7,40} ${cpugraph cpu2 10,40 ff0000 ff0000}${font}
+${voffset 4}${font StyleBats:size=9.9}${color2}k${voffset -2}${font Monospace:size=8.39}${color3}${offset 5}${font Monospace:size=8}${cpu cpu3}% ${color green}${cpubar cpu3 7,40} ${cpugraph cpu3 10,40 ff0000 ff0000} ${alignr}${color3}${cpu cpu4}% ${color green}${cpubar cpu4 7,40} ${cpugraph cpu4 10,40 ff0000 ff0000}${font}
+${voffset 4}${font StyleBats:size=9.9}${color2}k${voffset -2}${font Monospace:size=8.39}${color3}${offset 5}${font Monospace:size=8}${cpu cpu5}% ${color green}${cpubar cpu5 7,40} ${cpugraph cpu5 10,40 ff0000 ff0000} ${alignr}${color3}${cpu cpu6}% ${color green}${cpubar cpu6 7,40} ${cpugraph cpu6 10,40 ff0000 ff0000}${font}
+${voffset 4}${font StyleBats:size=9.9}${color2}k${voffset -2}${font Monospace:size=8.39}${color3}${offset 5}${font Monospace:size=8}${cpu cpu7}% ${color green}${cpubar cpu7 7,40} ${cpugraph cpu7 10,40 ff0000 ff0000} ${alignr}${color3}${cpu cpu8}% ${color green}${cpubar cpu8 7,40} ${cpugraph cpu8 10,40 ff0000 ff0000}${font}
+${else}\
+${endif}\
+##################################
+##            MEMORY            ##
+##################################
+${voffset 6}${font DroidSans:bold:size=8}${color Tan1}MEMORY${offset 8}${color DarkSlateGray}${voffset -2}${hr 2}${font}
+${voffset 4}${font StyleBats:size=10}${color2}l${voffset -2}${font DroidSansFallback:size=8.3}${color3}${offset 3}${font DroidSans:size=8.3}${mem} / ${memmax}  ${memgraph 10,90 ff0000 ff0000}${alignr}${memperc}%
+${color ff4800}$membar${font}
+${voffset -8}${color #382D2C}${swapbar 3.5}${font}
+##################################
+## 	          BATTERY           ##
+##################################
+${if_existing /home/user/.config/conky/battery}\
+${voffset 6}${font DroidSans:bold:size=8}${color Tan1}BATTERY${offset 8}${color DarkSlateGray}${voffset -2}${hr 2}${font}
+${voffset 4}${color white}${font StyleBats:size=8.3}${color2}A${font DroidSans:size=8.3} Remaining: ${alignc}${battery_percent BAT0}% ${alignr}${battery_time BAT0}
+${color yellow}${battery_bar BAT0}${color}
+${else}\
+${endif}\
+##################################
+##             HDD              ##
+##################################
+${voffset 6}${font DroidSans:bold:size=8}${color Tan1}HARD DRIVES${offset 8}${color DarkSlateGray}${voffset -2}${hr 2}${font}
+${if_existing /home/user/.config/conky/lvm}\
+${voffset 4}${font DroidSans:size=8.25}${color white}System: ${diskiograph /dev/dm-1 10,85}${alignr}${fs_free /home} / ${fs_size /home}
+${color C2E078}${fs_bar 4 /}
+${font DroidSans:size=8.25}${color white}Storage: ${diskiograph /dev/dm-3 10,85}${alignr}${fs_free /media/Storage} / ${fs_size /media/Storage}
+${color C2E078}${fs_bar 4 /media/Storage}
+${else}\
+${voffset 4}${font DroidSans:size=8.25}${color white}System: ${diskiograph /dev/sda2 10,85}${alignr}${fs_free /home} / ${fs_size /home}
+${color C2E078}${fs_bar 4 /}
+${font DroidSans:size=8.25}${color white}Storage: ${diskiograph /dev/sda3 10,85}${alignr}${fs_free /media/Storage} / ${fs_size /media/Storage}
+${color C2E078}${fs_bar 4 /media/Storage}
+${endif}\
+${if_existing /home/user/.config/conky/hdd_auxiliary}\
+${font DroidSans:size=8.25}${color white}Auxiliary: ${diskiograph /dev/sdb1 10,85}${alignr}${fs_free /media/Auxiliary} / ${fs_size /media/Auxiliary}
+${color C2E078}${fs_bar 4 /media/Auxiliary}\
+${else}\
+${endif}\
+##################################
+##         TOP PROCESSES        ##
+##################################
+${voffset 6}${font DroidSans:bold:size=8}${color Tan1}TOP PROCESSES${offset 8}${color DarkSlateGray}${voffset -2}${hr 2}${font}
+${voffset 4}${font Monospace:size=8}${color #3fc2f3}${top name 1} $color${alignr}${top pid 1} ${top cpu 1} ${top mem 1}
+${color #3fc2f3}${top name 2} $color${alignr}${top pid 2} ${top cpu 2} ${top mem 2}
+${color #3fc2f3}${top name 3} $color${alignr}${top pid 3} ${top cpu 3} ${top mem 3}$font
+${voffset 3}${font Monospace:size=8}${color #3fc2f3}${top_mem name 1} $color${alignr}${top_mem pid 1} ${top_mem cpu 1} ${top_mem mem 1}
+${color #3fc2f3}${top_mem name 2} $color${alignr}${top_mem pid 2} ${top_mem cpu 2} ${top_mem mem 2}
+${color #3fc2f3}${top_mem name 3} $color${alignr}${top_mem pid 3} ${top_mem cpu 3} ${top_mem mem 3}${font}
+##################################
+##           ETHERNET           ##
+##################################
+${if_existing /home/user/.config/conky/eth0}\
+${voffset 6}${font DroidSans:bold:size=8}${color Tan1}ETHERNET${offset 8}${color DarkSlateGray}${voffset -2}${hr 2}${font}
+${voffset 5}${color white}${font DroidSans:size=7.5}${addr eth0}   ${color gray}${execi 1800 wget -q -O - checkip.dyndns.org | sed -e 's/[^[:digit:]\|.]//g'}${alignr}${color yellow}${texeci 120 sh -c "ping -I eth0 -c 1 google.com | grep time= | cut -d "=" -f 4" }${font}
+${voffset 5}${font PizzaDudeBullets:size=9.5}${color gray}T ${font DroidSans:size=8.3}${color green}${downspeed eth0}${color}  (${totaldown eth0})${alignr}${downspeedgraph eth0 10,120 3ADF00 3ADF00}
+${voffset 2}${font PizzaDudeBullets:size=9.5}${color gray}N ${font DroidSans:size=8.3}${color red}${upspeed eth0}${color}  (${totalup eth0})${alignr}${upspeedgraph eth0 10,120 ff0000 ff0000}${font}
+${else}\
+${endif}\
+##################################
+##             WIFI             ##
+##################################
+${if_existing /home/user/.config/conky/wlan0}\
+${voffset 6}${font DroidSans:bold:size=8}${color Tan1}WI-FI${color gray}${font DroidSans:bold:size=7} [${wireless_essid wlan0}]${offset 8}${color DarkSlateGray}${voffset -2}${hr 2}${font}
+${voffset 5}${color white}${font DroidSans:size=7.5}${addr wlan0}   ${color gray}${execi 1800 wget -q -O - checkip.dyndns.org | sed -e 's/[^[:digit:]\|.]//g'}${alignr}${color yellow}${texeci 120 sh -c "ping -I wlan0 -c 1 google.com | grep time= | cut -d "=" -f 4" }${font}
+${voffset 5}${font PizzaDudeBullets:size=9.5}${color gray}T ${font DroidSans:size=8.3}${color green}${downspeed wlan0}${color}  (${totaldown wlan0})${alignr}${downspeedgraph wlan0 10,120 3ADF00 3ADF00}
+${voffset 2}${font PizzaDudeBullets:size=9.5}${color gray}N ${font DroidSans:size=8.3}${color red}${upspeed wlan0}${color}  (${totalup wlan0})${alignr}${upspeedgraph wlan0 10,120 ff0000 ff0000}${font}
+${else}\
+${endif}\
+##################################
+##       ZALKEEN NETWORK        ##
+##################################
+${if_existing /home/user/.config/conky/zalkeen}\
+${voffset 6}${font DroidSans:bold:size=8}${color Tan1}ZALKEEN NETWORK${offset 8}${color DarkSlateGray}${voffset -2}${hr 2}${font}
+${voffset 5}${color white}${font DroidSans:size=7.5}${addr tun0}   ${color gray}${execi 1800 ping vpn.domain.net -c 1 | grep PING | cut -d "(" -f 2 | cut -d ")" -f 1}${alignr}${color yellow}${texeci 120 sh -c "ping -I tun0 -c 1 10.7.3.1 | grep time= | cut -d "=" -f 4" }${font}
+${voffset 5}${font PizzaDudeBullets:size=9.5}${color gray}T ${font DroidSans:size=8.3}${color green}${downspeed tun0}${color}  (${totaldown tun0})${alignr}${downspeedgraph tun0 10,120 3ADF00 3ADF00}
+${voffset 2}${font PizzaDudeBullets:size=9.5}${color gray}N ${font DroidSans:size=8.3}${color red}${upspeed tun0}${color}  (${totalup tun0})${alignr}${upspeedgraph tun0 10,120 ff0000 ff0000}${font}
+${else}\
+${endif}\
+#################################
+##       ZALKEEN SERVERS       ##
+#################################
+${if_existing /home/user/.config/conky/zalkeenstatus}\
+${voffset 6}${font DroidSans:bold:size=8}${color Tan1}ZALKEEN NODE STATUS${offset 8}${color DarkSlateGray}${voffset -2}${hr 2}${font}
+${voffset 5}${if_match "${execi 120 if ping -c 1 -W 2 desktop.domain.vpn > /dev/null; then echo "1"; fi}" == "1"}${color green}${else}${color red}${endif}${font DroidSans:size=8.5} desktop  ${if_match "${execi 120 if ping -c 1 -W 2 laptop.domain.vpn > /dev/null; then echo "1"; fi}" == "1"}${color green}${else}${color red}${endif}${font DroidSans:size=8.5} laptop \
+${alignr}${if_match "${execi 120 nc -w 5 -z pc1.dyndns.org 2244; echo $?}" == "0"}${color green}${else}${color red}${endif}${font DroidSans:size=8.5} grd  ${if_match "${execi 120 nc -w 5 -z pc2.dyndns.org 2244; echo $?}" == "0"}${color green}${else}${color red}${endif}${font DroidSans:size=8.5} kha  ${if_match "${execi 120 nc -w 5 -z pc3.dyndns.org 2244; echo $?}" == "0"}${color green}${else}${color red}${endif}${font DroidSans:size=8.5} tel
+${voffset 5}${if_match "${execi 120 if ping -c 1 -W 2 server1.domain.vpn > /dev/null; then echo "1"; fi}" == "1"}${font PizzaDudeBullets:size=9.5}${color green}Y${else}${font PizzaDudeBullets:size=9.5}${color red}F${endif}${font DroidSans:size=8.5}  server1 ${alignr}${color gray}${execi 1800 ping server1.domain.net -c 1 | grep PING | cut -d "(" -f 2 | cut -d ")" -f 1}    ${color #3fc2f3}${texeci 120 sh -c "ping -c 1 server1.domain.net | grep time= | cut -d "=" -f 4"}$font
+${voffset 2}${if_match "${execi 120 if ping -c 1 -W 2 server2.domain.vpn > /dev/null; then echo "1"; fi}" == "1"}${font PizzaDudeBullets:size=9.5}${color green}Y${else}${font PizzaDudeBullets:size=9.5}${color red}F${endif}${font DroidSans:size=8.5}  server2 ${alignr}${color gray}${execi 1800 ping server2.domain.net -c 1 | grep PING | cut -d "(" -f 2 | cut -d ")" -f 1}    ${color #3fc2f3}${texeci 120 sh -c "ping -c 1 server2.domain.net | grep time= | cut -d "=" -f 4"}$font
+${voffset 2}${if_match "${execi 120 if ping -c 1 -W 2 server3.domain.vpn > /dev/null; then echo "1"; fi}" == "1"}${font PizzaDudeBullets:size=9.5}${color green}Y${else}${font PizzaDudeBullets:size=9.5}${color red}F${endif}${font DroidSans:size=8.5}  server3 ${alignr}${color gray}${execi 1800 ping server3.domain.net -c 1 | grep PING | cut -d "(" -f 2 | cut -d ")" -f 1}    ${color #3fc2f3}${texeci 120 sh -c "ping -c 1 server3.domain.net | grep time= | cut -d "=" -f 4"}${font}
+${else}\
+${endif}\
+##################################
+##          TETHERING           ##
+##################################
+${if_existing /home/user/.config/conky/tethering}\
+${voffset 6}${font DroidSans:bold:size=8}${color Tan1}TETHERING${offset 8}${color DarkSlateGray}${voffset -2}${hr 2}${font}
+${voffset 5}${color white}${font DroidSans:size=7.5}${addr usb0}   ${color gray}${execi 1800 wget -q -O - checkip.dyndns.org | sed -e 's/[^[:digit:]\|.]//g'}${alignr}${color yellow}${texeci 120 sh -c "ping -I usb0 -c 1 google.com | grep time= | cut -d "=" -f 4" }${font}
+${voffset 5}${font PizzaDudeBullets:size=9.5}${color gray}T ${font DroidSans:size=8.3}${color green}${downspeed usb0}${color}  (${totaldown usb0})${alignr}${downspeedgraph usb0 10,120 3ADF00 3ADF00}
+${voffset 2}${font PizzaDudeBullets:size=9.5}${color gray}N ${font DroidSans:size=8.3}${color red}${upspeed usb0}${color}  (${totalup usb0})${alignr}${upspeedgraph usb0 10,120 ff0000 ff0000}${font}
+${else}\
+${endif}\
+##################################
+##           HYPERBORIA         ##
+##################################
+${if_existing /home/user/.config/conky/hyperboria}\
+${voffset 6}${font DroidSans:bold:size=8}${color Tan1}HYPERBORIA NETWORK${offset 8}${color DarkSlateGray}${voffset -2}${hr 2}${font}
+${voffset 5}${color white}${font DroidSans:size=7.5}${execi 1800 echo $(ip addr show dev tun1 | grep "inet6" | awk -F "/8" '{print $1}' | awk '{print $2}' | head -n 1)}  ${alignr}${color yellow}${texeci 120 sh -c "ping -6 -I tun1 -c 1 socialno.de | grep time= | cut -d "=" -f 4" }${font}
+${voffset 5}${font PizzaDudeBullets:size=9.5}${color gray}T ${font DroidSans:size=8.3}${color green}${downspeed tun1}${color}  (${totaldown tun1})${alignr}${downspeedgraph tun1 10,120 3ADF00 3ADF00}
+${voffset 2}${font PizzaDudeBullets:size=9.5}${color gray}N ${font DroidSans:size=8.3}${color red}${upspeed tun1}${color}  (${totalup tun1})${alignr}${upspeedgraph tun1 10,120 ff0000 ff0000}${font}
+${else}\
+${endif}\

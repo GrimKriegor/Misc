@@ -74,6 +74,8 @@ if [ "$UPGRADE" = "YES" ]; then
   cd "$DEVELOPMENT"
 
   CMAKE_PARAMS="-DBUILD_OPENCS=OFF \
+      -DCMAKE_CXX_STANDARD=14 \
+      -DCMAKE_CXX_FLAGS=\"-std=c++14\" \
       -DRakNet_INCLUDES="${RAKNET_LOCATION}"/include \
       -DRakNet_LIBRARY_DEBUG="${RAKNET_LOCATION}"/build/Lib/LibStatic/libRakNetLibStatic.a \
       -DRakNet_LIBRARY_RELEASE="${RAKNET_LOCATION}"/build/Lib/LibStatic/libRakNetLibStatic.a \
@@ -113,14 +115,9 @@ if [ "$UPGRADE" = "YES" ]; then
     export BULLET_ROOT="${BULLET_LOCATION}"/install
   fi
 
-  if [ $USE_CXX14 ]; then
-    CMAKE_PARAMS="$CMAKE_PARAMS \
-      -DCMAKE_CXX_STANDARD=14"
-  fi
-
   echo -e "\n\n$CMAKE_PARAMS\n\n"
   cmake "$CODE" $CMAKE_PARAMS
-  make -j $CORES
+  make -j $CORES | tee "${BASE}"/build.log
 
 fi
 
@@ -133,6 +130,10 @@ do
     mv "$DEVELOPMENT/$FILENAME" "$DEVELOPMENT/$FILENAME.bkp" 2> /dev/null
     ln -s "$KEEPERS/$FILENAME" "$DEVELOPMENT/"
 done
+
+#CREATE USEFUL SYNLINKS ON THE BASE DIRECTORY
+echo -e "\n>> Creating symlinks of useful stuffs in the base directory"
+#ln -s "${DEVELOPMENT}"/tes3mp-browser "${BASE}"/ >/dev/null
 
 #ALL DONE
 echo -e "\n\n\nAll done! Press any key to exit.\nMay Vehk bestow his blessing upon your Muatra."

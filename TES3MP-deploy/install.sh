@@ -104,14 +104,13 @@ cp "$CODE"/files/tes3mp/tes3mp-{client,server}-default.cfg "$KEEPERS"
 
 #SET home VARIABLE IN tes3mp-server-default.cfg
 echo -e "\n>> Autoconfiguring"
-sed -i "s|~/ClionProjects/PS-dev|$KEEPERS/PluginExamples|g" $KEEPERS/tes3mp-server-default.cfg
+sed -i "s|~/ClionProjects/PS-dev|$KEEPERS/PluginExamples|g" "${KEEPERS}"/tes3mp-server-default.cfg
 
 #DIRTY HACKS
 echo -e "\n>> Applying some dirty hacks"
-sed -i "s|tes3mp.lua,chat_parser.lua|server.lua|g" $KEEPERS/tes3mp-server-default.cfg #Fixes server scripts
-sed -i "s|Y #key for switch chat mode enabled/hidden/disabled|Right Alt|g" $KEEPERS/tes3mp-client-default.cfg #Changes the chat key
-#sed -i "s|mp.tes3mp.com|grimkriegor.zalkeen.us|g" $KEEPERS/tes3mp-client-default.cfg #Sets Grim's server as the default
-USE_CXX14=true #Forces the use of C++14
+sed -i "s|tes3mp.lua,chat_parser.lua|server.lua|g" "${KEEPERS}"/tes3mp-server-default.cfg #Fixes server scripts
+sed -i "s|Y #key for switch chat mode enabled/hidden/disabled|Right Alt|g" "${KEEPERS}"/tes3mp-client-default.cfg #Changes the chat key
+#sed -i "s|mp.tes3mp.com|grimkriegor.zalkeen.us|g" "${KEEPERS}"/tes3mp-client-default.cfg #Sets Grim's server as the default
 
 #BUILD OPENSCENEGRAPH
 if [ $BUILD_OSG ]; then
@@ -154,7 +153,7 @@ cd "$BASE"
 #BUILD TERRA
 if [ $BUILD_TERRA ]; then
     echo -e "\n>> Building Terra"
-    cd $DEPENDENCIES/terra/
+    cd "$DEPENDENCIES"/terra/
     make -j$CORES
 else
     echo -e "\n>> Unpacking and preparing Terra"
@@ -171,4 +170,3 @@ echo -e "\n>>Preparing to build TES3MP"
 bash upgrade.sh "$CORES" --install
 
 read
-

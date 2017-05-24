@@ -122,6 +122,11 @@ if [ $BUILD_OSG ]; then
     cmake ..
     make -j$CORES
 
+    if [ $? -ne 0 ]; then
+      echo -e "Failed to build OpenSceneGraph.\nExiting..."
+      exit 1
+    fi
+
     cd "$BASE"
 fi
 
@@ -134,6 +139,12 @@ if [ $BUILD_BULLET ]; then
     rm CMakeCache.txt
     cmake -DCMAKE_INSTALL_PREFIX="$DEPENDENCIES"/bullet/install -DBUILD_SHARED_LIBS=1 -DINSTALL_LIBS=1 -DINSTALL_EXTRA_LIBS=1 -DCMAKE_BUILD_TYPE=Release ..
     make -j$CORES
+
+    if [ $? -ne 0 ]; then
+      echo -e "Failed to build Bullet.\nExiting..."
+      exit 1
+    fi
+
     make install
     
     cd "$BASE"
@@ -146,6 +157,12 @@ cd "$DEPENDENCIES"/raknet/build
 rm CMakeCache.txt
 cmake -DCMAKE_BUILD_TYPE=Release -DRAKNET_ENABLE_DLL=OFF -DRAKNET_ENABLE_SAMPLES=OFF -DRAKNET_ENABLE_STATIC=ON -DRAKNET_GENERATE_INCLUDE_ONLY_DIR=ON ..
 make -j$CORES
+
+if [ $? -ne 0 ]; then
+  echo -e "Failed to build RakNet.\nExiting..."
+  exit 1
+fi
+
 ln -s "$DEPENDENCIES"/raknet/include/RakNet "$DEPENDENCIES"/raknet/include/raknet #Stop being so case sensitive
 
 cd "$BASE"
@@ -155,6 +172,11 @@ if [ $BUILD_TERRA ]; then
     echo -e "\n>> Building Terra"
     cd "$DEPENDENCIES"/terra/
     make -j$CORES
+
+    if [ $? -ne 0 ]; then
+      echo -e "Failed to build Terra.\nExiting..."
+      exit 1
+    fi
 else
     echo -e "\n>> Unpacking and preparing Terra"
     cd "$DEPENDENCIES"

@@ -117,7 +117,7 @@ if [ "$UPGRADE" = "YES" ]; then
 
   echo -e "\n\n$CMAKE_PARAMS\n\n"
   cmake "$CODE" $CMAKE_PARAMS
-  make -j $CORES | tee "${BASE}"/build.log
+  make -j $CORES 2>&1 | tee "${BASE}"/build.log
 
 fi
 

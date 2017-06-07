@@ -22,6 +22,10 @@ if [ -d "$DEPENDENCIES"/bullet ]; then
   BUILD_BULLET=true
 fi
 
+if [ -f "$BASE"/serveronly ]; then
+  SERVER_ONLY=true
+fi
+
 #LOCATIONS OF RAKNET AND TERRA
 RAKNET_LOCATION="$DEPENDENCIES"/raknet
 TERRA_LOCATION="$DEPENDENCIES"/terra
@@ -113,6 +117,20 @@ if [ "$UPGRADE" = "YES" ]; then
       -DBullet_LinearMath_LIBRARY="${BULLET_LOCATION}"/install/lib/libLinearMath.so"
     export LD_LIBRARY_PATH="$LD_LIBRARY_PATH":"${BULLET_LOCATION}"/install/lib
     export BULLET_ROOT="${BULLET_LOCATION}"/install
+  fi
+
+  if [ $SERVER_ONLY ]; then
+    CMAKE_PARAMS="$CMAKE_PARAMS \
+      -DBUILD_OPENMW_MP=ON \
+      -DBUILD_BROWSER=OFF \
+      -DBUILD_BSATOOL=OFF \
+      -DBUILD_ESMTOOL=OFF \
+      -DBUILD_ESSIMPORTER=OFF \
+      -DBUILD_LAUNCHER=OFF \
+      -DBUILD_MWINIIMPORTER=OFF \
+      -DBUILD_MYGUI_PLUGIN=OFF \
+      -DBUILD_OPENMW=OFF \
+      -DBUILD_WIZARD=OFF
   fi
 
   echo -e "\n\n$CMAKE_PARAMS\n\n"

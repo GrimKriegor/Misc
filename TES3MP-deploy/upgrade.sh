@@ -81,8 +81,8 @@ if [ "$UPGRADE" = "YES" ]; then
       -DCMAKE_CXX_STANDARD=14 \
       -DCMAKE_CXX_FLAGS=\"-std=c++14\" \
       -DRakNet_INCLUDES="${RAKNET_LOCATION}"/include \
-      -DRakNet_LIBRARY_DEBUG="${RAKNET_LOCATION}"/build/Lib/LibStatic/libRakNetLibStatic.a \
-      -DRakNet_LIBRARY_RELEASE="${RAKNET_LOCATION}"/build/Lib/LibStatic/libRakNetLibStatic.a \
+      -DRakNet_LIBRARY_DEBUG="${RAKNET_LOCATION}"/build/lib/LibStatic/libRakNetLibStatic.a \
+      -DRakNet_LIBRARY_RELEASE="${RAKNET_LOCATION}"/build/lib/LibStatic/libRakNetLibStatic.a \
       -DTerra_INCLUDES="${TERRA_LOCATION}"/include \
       -DTerra_LIBRARY_RELEASE="${TERRA_LOCATION}"/lib/libterra.a"
 

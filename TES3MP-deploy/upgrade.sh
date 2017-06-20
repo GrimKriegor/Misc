@@ -130,7 +130,7 @@ if [ "$UPGRADE" = "YES" ]; then
       -DBUILD_MWINIIMPORTER=OFF \
       -DBUILD_MYGUI_PLUGIN=OFF \
       -DBUILD_OPENMW=OFF \
-      -DBUILD_WIZARD=OFF
+      -DBUILD_WIZARD=OFF"
   fi
 
   echo -e "\n\n$CMAKE_PARAMS\n\n"

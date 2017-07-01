@@ -92,6 +92,7 @@ esac
 #PULL SOFTWARE VIA GIT
 echo -e "\n>> Downloading software"
 git clone https://github.com/TES3MP/openmw-tes3mp.git "$CODE"
+git clone https://github.com/Koncord/CallFF "$DEPENDENCIES/"callff --depth 1
 if [ $BUILD_OSG ]; then git clone https://github.com/openscenegraph/OpenSceneGraph.git "$DEPENDENCIES"/osg --depth 1; fi
 if [ $BUILD_BULLET ]; then git clone https://github.com/bulletphysics/bullet3.git "$DEPENDENCIES"/bullet --depth 1; fi
 git clone https://github.com/TES3MP/RakNet.git "$DEPENDENCIES"/raknet --depth 1
@@ -111,6 +112,20 @@ echo -e "\n>> Applying some dirty hacks"
 sed -i "s|tes3mp.lua,chat_parser.lua|server.lua|g" "${KEEPERS}"/tes3mp-server-default.cfg #Fixes server scripts
 sed -i "s|Y #key for switch chat mode enabled/hidden/disabled|Right Alt|g" "${KEEPERS}"/tes3mp-client-default.cfg #Changes the chat key
 #sed -i "s|mp.tes3mp.com|grimkriegor.zalkeen.us|g" "${KEEPERS}"/tes3mp-client-default.cfg #Sets Grim's server as the default
+
+#BUILD CALLFF
+echo -e "\n>> Building CallFF"
+mkdir "$DEPENDENCIES"/callff/build
+cd "$DEPENDENCIES"/callff/build
+cmake ..
+make -j$CORES
+
+if [ $? -ne 0 ]; then
+      echo -e "Failed to build CallFF.\nExiting..."
+      exit 1
+fi
+
+cd "$BASE"
 
 #BUILD OPENSCENEGRAPH
 if [ $BUILD_OSG ]; then

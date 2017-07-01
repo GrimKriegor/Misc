@@ -26,7 +26,8 @@ if [ -f "$BASE"/serveronly ]; then
   SERVER_ONLY=true
 fi
 
-#LOCATIONS OF RAKNET AND TERRA
+#DEPENDENCY LOCATIONS
+CALLFF_LOCATION="$DEPENDENCIES"/callff
 RAKNET_LOCATION="$DEPENDENCIES"/raknet
 TERRA_LOCATION="$DEPENDENCIES"/terra
 if [ $BUILD_OSG ]; then OSG_LOCATION="$DEPENDENCIES"/osg; fi
@@ -80,6 +81,8 @@ if [ "$UPGRADE" = "YES" ]; then
   CMAKE_PARAMS="-DBUILD_OPENCS=OFF \
       -DCMAKE_CXX_STANDARD=14 \
       -DCMAKE_CXX_FLAGS=\"-std=c++14\" \
+      -DCallFF_INCLUDES="${CALLFF_LOCATION}"/include \
+      -DCallFF_LIBRARY="${CALLFF_LOCATION}"/build/src/libcallff.a \
       -DRakNet_INCLUDES="${RAKNET_LOCATION}"/include \
       -DRakNet_LIBRARY_DEBUG="${RAKNET_LOCATION}"/build/lib/LibStatic/libRakNetLibStatic.a \
       -DRakNet_LIBRARY_RELEASE="${RAKNET_LOCATION}"/build/lib/LibStatic/libRakNetLibStatic.a \

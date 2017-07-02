@@ -1,10 +1,30 @@
 #!/bin/bash
 
+#PARSE ARGUMENTS
+while [ $# -ne 0 ]; do
+  case $1 in
+
+  #NUMBER OF CPU THREADS
+  -c | --cores )
+    ARG_CORES=$2
+    shift
+  ;;
+
+  #DEFINE INSTALLATION AS SERVER ONLY
+  -s | --server-only )
+    touch serveronly
+  ;;
+
+  esac
+  shift
+
+done
+
 #NUMBER OF CPU CORES USED FOR COMPILATION
-if [ "$1" == "" ]; then
+if [ "$ARG_CORES" == "" ]; then
     CORES="$(cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l)"
 else
-    CORES="$1"
+    CORES="$ARG_CORES"
 fi
 
 #DISTRO IDENTIFICATION
@@ -204,6 +224,6 @@ cd "$BASE"
 
 #CALL upgrade.sh TO BUILD TES3MP
 echo -e "\n>>Preparing to build TES3MP"
-bash upgrade.sh "$CORES" --install
+bash upgrade.sh --cores "$CORES" --install
 
 read

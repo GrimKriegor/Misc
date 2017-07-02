@@ -1,10 +1,35 @@
 #!/bin/bash
 
+#PARSE ARGUMENTS
+while [ $# -ne 0 ]; do
+  case $1 in
+
+  #NUMBER OF CPU THREADS
+  -c | --cores )
+    ARG_CORES=$2
+    shift
+  ;;
+
+  #FIRST TIME RUN, INSTALL WITHOUT ASKING
+  -i | --install )
+    INSTALL=true
+  ;;
+
+  #UPGRADE IF THERE ARE CHANGES IN THE UPSTREAM CODE
+  -u | --check-changes )
+    CHECK_CHANGES=true
+  ;;
+
+  esac
+  shift
+
+done
+
 #NUMBER OF CPU CORES USED FOR COMPILATION
-if [ "$1" == "" ]; then
+if [[ "$ARG_CORES" == "" || "$ARG_CORES" == "0" ]]; then
     CORES="$(cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l)"
 else
-    CORES="$1"
+    CORES="$ARG_CORES"
 fi
 
 #FOLDER HIERARCHY
@@ -48,9 +73,9 @@ fi
 cd "$BASE"
 
 #OPTION TO UPGRADE
-if [ "$2" = "--install" ]; then
+if [ $INSTALL ]; then
   UPGRADE="YES"
-elif [ "$2" = "--check-changes" ]; then
+elif [ $CHECK_CHANGES ]; then
   if [ $GIT_CHANGES ]; then
     UPGRADE="YES"
   else

@@ -142,6 +142,8 @@ if [ "$UPGRADE" = "YES" ]; then
 
 fi
 
+cd "$BASE"
+
 #CREATE SYMLINKS FOR THE CONFIG FILES INSIDE THE NEW BUILD FOLDER
 echo -e "\n>> Creating symlinks of the config files in the build folder"
 for file in "$KEEPERS"/*
@@ -152,9 +154,21 @@ do
     ln -s "$KEEPERS/$FILENAME" "$DEVELOPMENT/"
 done
 
-#CREATE USEFUL SYNLINKS ON THE BASE DIRECTORY
-echo -e "\n>> Creating symlinks of useful stuffs in the base directory"
-#ln -s "${DEVELOPMENT}"/tes3mp-browser "${BASE}"/ >/dev/null
+#CREATE SYMLINKS FOR RESOURCES INSIDE THE CONFIG FOLDER
+echo -e "\n>> Creating symlinks for resources inside the config folder"
+ln -s "$DEVELOPMENT"/resources "$KEEPERS"/resources 2> /dev/null
+
+#CREATE USEFUL SHORTCUTS ON THE BASE DIRECTORY
+echo -e "\n>> Creating useful shortcuts on the base directory"
+if [ $SERVER_ONLY ]; then
+  SHORTCUTS=( "tes3mp-server" )
+else
+  SHORTCUTS=( "tes3mp" "tes3mp-browser" "tes3mp-server" )
+fi
+for i in ${SHORTCUTS[@]}; do
+  printf "#!/bin/bash\n\ncd build/\n./$i\ncd .." > "$i".sh
+  chmod +x "$i".sh
+done
 
 #ALL DONE
 echo -e "\n\n\nAll done! Press any key to exit.\nMay Vehk bestow his blessing upon your Muatra."

@@ -125,7 +125,7 @@ cp "$CODE"/files/tes3mp/tes3mp-{client,server}-default.cfg "$KEEPERS"
 
 #SET home VARIABLE IN tes3mp-server-default.cfg
 echo -e "\n>> Autoconfiguring"
-sed -i "s|~/ClionProjects/PS-dev|$KEEPERS/PluginExamples|g" "${KEEPERS}"/tes3mp-server-default.cfg
+sed -i "s|home = .*|home = $KEEPERS/PluginExamples|g" "${KEEPERS}"/tes3mp-server-default.cfg
 
 #DIRTY HACKS
 echo -e "\n>> Applying some dirty hacks"

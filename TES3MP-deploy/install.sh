@@ -12,6 +12,7 @@ while [ $# -ne 0 ]; do
 
   #DEFINE INSTALLATION AS SERVER ONLY
   -s | --server-only )
+    SERVER_ONLY=true
     touch .serveronly
   ;;
 
@@ -108,7 +109,13 @@ case $DISTRO in
       read
   ;;
 esac
-    
+
+#AVOID SOME DEPENDENCIES ON SERVER ONLY MODE
+if [ $SERVER_ONLY ]; then
+  $BUILD_OSG=false
+  $BUILD_BULLET=false
+fi
+
 #PULL SOFTWARE VIA GIT
 echo -e "\n>> Downloading software"
 git clone https://github.com/TES3MP/openmw-tes3mp.git "$CODE"

@@ -47,7 +47,7 @@ if [ -d "$DEPENDENCIES"/bullet ]; then
   BUILD_BULLET=true
 fi
 
-if [ -f "$BASE"/serveronly ]; then
+if [ -f "$BASE"/.serveronly ]; then
   SERVER_ONLY=true
 fi
 

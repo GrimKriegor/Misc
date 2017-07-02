@@ -12,7 +12,7 @@ while [ $# -ne 0 ]; do
 
   #DEFINE INSTALLATION AS SERVER ONLY
   -s | --server-only )
-    touch serveronly
+    touch .serveronly
   ;;
 
   esac

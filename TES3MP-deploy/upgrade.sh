@@ -6,8 +6,12 @@ while [ $# -ne 0 ]; do
 
   #NUMBER OF CPU THREADS
   -c | --cores )
-    ARG_CORES=$2
-    shift
+    if [[ "$2" =~ ^-.* || "$2" == "" ]]; then
+      ARG_CORES=""
+    else
+      ARG_CORES=$2
+      shift
+    fi
   ;;
 
   #FIRST TIME RUN, INSTALL WITHOUT ASKING
@@ -22,16 +26,26 @@ while [ $# -ne 0 ]; do
 
   #BUILD SPECIFIC COMMIT
   -h | --commit )
-    BUILD_COMMIT=true
-    TARGET_COMMIT="$2"
-    shift
+    if [[ "$2" =~ ^-.* || "$2" == "" ]]; then
+      echo -e "\nYou must specify a valid commit hash"
+      exit 1
+    else
+      BUILD_COMMIT=true
+      TARGET_COMMIT="$2"
+      shift
+    fi
   ;;
 
   #CUSTOM VERSION STRING FOR COMPATIBILITY
   -s | --version-string )
-    CHANGE_VERSION_STRING=true
-    TARGET_VERSION_STRING="$2"
-    shift
+    if [[ "$2" =~ ^-.* || "$2" == "" ]]; then
+      echo -e "\nYou must specify a valid version string"
+      exit 1
+    else
+      CHANGE_VERSION_STRING=true
+      TARGET_VERSION_STRING="$2"
+      shift
+    fi
   ;;
 
   esac

@@ -20,6 +20,13 @@ while [ $# -ne 0 ]; do
     CHECK_CHANGES=true
   ;;
 
+  #BUILD SPECIFIC COMMIT
+  -h | --commit )
+    BUILD_COMMIT=true
+    TARGET_COMMIT=$2
+    shift
+  ;;
+
   esac
   shift
 
@@ -63,7 +70,7 @@ echo -e "\n>> Checking the git repository for changes"
 cd "$CODE"
 #git pull --dry-run | grep -q -v 'Already up-to-date.'
 git remote update
-test $(git rev-parse @) != $(git rev-parse @{u})
+test "$(git rev-parse @)" != "$(git rev-parse @{u})"
 if [ $? -eq 0 ]; then
   echo -e "\nNEW CHANGES on the git repository"
   GIT_CHANGES=true
@@ -75,6 +82,7 @@ cd "$BASE"
 #OPTION TO UPGRADE
 if [ $INSTALL ]; then
   UPGRADE="YES"
+
 elif [ $CHECK_CHANGES ]; then
   if [ $GIT_CHANGES ]; then
     UPGRADE="YES"
@@ -82,9 +90,25 @@ elif [ $CHECK_CHANGES ]; then
     echo -e "\nNo new commits, exiting."
     exit 0
   fi
+
+elif [ $BUILD_COMMIT ]; then
+  cd "$CODE"
+  if [ "$TARGET_COMMIT" == "latest" ]; then
+    echo -e "\nChecking out the latest commit."
+    git stash
+    git checkout master
+  else
+    echo -e "\nChecking out $TARGET_COMMIT"
+    git stash
+    git checkout "$TARGET_COMMIT"
+  fi
+  UPGRADE="YES"
+  cd "$BASE"
+
 else
   echo -e "\nDo you wish to rebuild TES3MP? (type YES to continue)"
   read UPGRADE
+
 fi
 
 #REBUILD OPENMW/TES3MP
@@ -171,12 +195,12 @@ cd "$BASE"
 
 #CREATE SYMLINKS FOR THE CONFIG FILES INSIDE THE NEW BUILD FOLDER
 echo -e "\n>> Creating symlinks of the config files in the build folder"
-for file in "$KEEPERS"/*
+for file in "$KEEPERS"/*.cfg
 do
   FILEPATH=$file
   FILENAME=$(basename $file)
-    mv "$DEVELOPMENT/$FILENAME" "$DEVELOPMENT/$FILENAME.bkp" 2> /dev/null
-    ln -s "$KEEPERS/$FILENAME" "$DEVELOPMENT/"
+  mv "$DEVELOPMENT/$FILENAME" "$DEVELOPMENT/$FILENAME.bkp" 2> /dev/null
+  ln -s "$KEEPERS/$FILENAME" "$DEVELOPMENT/"
 done
 
 #CREATE SYMLINKS FOR RESOURCES INSIDE THE CONFIG FOLDER

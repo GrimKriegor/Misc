@@ -16,6 +16,13 @@ while [ $# -ne 0 ]; do
     touch .serveronly
   ;;
 
+  #BUILD SPECIFIC COMMIT
+  -h | --commit )
+    BUILD_COMMIT=true
+    TARGET_COMMIT=$2
+    shift
+  ;;
+
   esac
   shift
 
@@ -231,6 +238,10 @@ cd "$BASE"
 
 #CALL upgrade.sh TO BUILD TES3MP
 echo -e "\n>>Preparing to build TES3MP"
-bash upgrade.sh --cores "$CORES" --install
+if [ ! $BUILD_COMMIT ]; then
+  bash upgrade.sh --cores "$CORES" --install
+else
+  bash upgrade.sh --cores "$CORES" --commit "$TARGET_COMMIT"
+fi
 
 read

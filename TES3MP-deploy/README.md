@@ -17,6 +17,8 @@ They are pretty bare and have no redundancy (yet), if you feel like testing it, 
 
     -s, --server-only : Install as server only, do not build the client
 
+    -h, --commit HASH : Build a specific TES3MP commit
+
 **upgrade.sh** -- Pulls the latest TES3MP code and if there are any changes, rebuilds the project, keeping the config files safe via symlinks
 
     -c, --cores N : Use N threads for building TES3MP and its dependencies
@@ -24,6 +26,8 @@ They are pretty bare and have no redundancy (yet), if you feel like testing it, 
     -i, --install : Build TES3MP without asking, useful when being called by upgrade.sh
 
     -u, --check-changes : Upgrade without asking, if there are changes in the upstream code, useful for scheduled auto-upgrading
+
+    -h, --commit HASH : Build a specific TES3MP commit
 
 --
 

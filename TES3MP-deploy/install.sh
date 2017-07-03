@@ -19,7 +19,14 @@ while [ $# -ne 0 ]; do
   #BUILD SPECIFIC COMMIT
   -h | --commit )
     BUILD_COMMIT=true
-    TARGET_COMMIT=$2
+    TARGET_COMMIT="$2"
+    shift
+  ;;
+
+  #CUSTOM VERSION STRING FOR COMPATIBILITY
+  -s | --version-string )
+    CHANGE_VERSION_STRING=true
+    TARGET_VERSION_STRING="$2"
     shift
   ;;
 
@@ -238,10 +245,20 @@ cd "$BASE"
 
 #CALL upgrade.sh TO BUILD TES3MP
 echo -e "\n>>Preparing to build TES3MP"
-if [ ! $BUILD_COMMIT ]; then
-  bash upgrade.sh --cores "$CORES" --install
+
+UPGRADE_ARGS="--cores $CORES"
+
+if [ $BUILD_COMMIT ]; then
+  UPGRADE_ARGS="$UPGRADE_ARGS --commit \"$TARGET_COMMIT\""
 else
-  bash upgrade.sh --cores "$CORES" --commit "$TARGET_COMMIT"
+  UPGRADE_ARGS="$UPGRADE_ARGS --install"
 fi
+
+if [ $CHANGE_VERSION_STRING ]; then
+  UPGRADE_ARGS="$UPGRADE_ARGS --version-string \"$TARGET_VERSION_STRING\""
+fi
+
+echo -e "$UPGRADE_ARGS"
+bash upgrade.sh $UPGRADE_ARGS
 
 read

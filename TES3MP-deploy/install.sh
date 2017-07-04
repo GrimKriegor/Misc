@@ -263,13 +263,13 @@ echo -e "\n>>Preparing to build TES3MP"
 UPGRADE_ARGS="--cores $CORES"
 
 if [ $BUILD_COMMIT ]; then
-  UPGRADE_ARGS="$UPGRADE_ARGS --commit \"$TARGET_COMMIT\""
+  UPGRADE_ARGS="$UPGRADE_ARGS --commit $TARGET_COMMIT"
 else
   UPGRADE_ARGS="$UPGRADE_ARGS --install"
 fi
 
 if [ $CHANGE_VERSION_STRING ]; then
-  UPGRADE_ARGS="$UPGRADE_ARGS --version-string \"$TARGET_VERSION_STRING\""
+  UPGRADE_ARGS="$UPGRADE_ARGS --version-string $TARGET_VERSION_STRING"
 fi
 
 echo -e "$UPGRADE_ARGS"

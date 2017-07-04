@@ -169,6 +169,11 @@ if [ "$REBUILD" = "YES" ]; then
     git stash
     git pull
     cd "$BASE"
+
+    cd "$KEEPERS"/PluginExamples
+    git stash
+    git pull
+    cd "$BASE"
   fi
 
   echo -e "\n>> Doing a clean build of TES3MP"

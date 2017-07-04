@@ -6,8 +6,12 @@ while [ $# -ne 0 ]; do
 
   #NUMBER OF CPU THREADS
   -c | --cores )
-    ARG_CORES=$2
-    shift
+    if [[ "$2" =~ ^-.* || "$2" == "" ]]; then
+      ARG_CORES=""
+    else
+      ARG_CORES=$2
+      shift
+    fi
   ;;
 
   #DEFINE INSTALLATION AS SERVER ONLY
@@ -18,9 +22,26 @@ while [ $# -ne 0 ]; do
 
   #BUILD SPECIFIC COMMIT
   -h | --commit )
-    BUILD_COMMIT=true
-    TARGET_COMMIT=$2
-    shift
+    if [[ "$2" =~ ^-.* || "$2" == "" ]]; then
+      echo -e "\nYou must specify a valid commit hash"
+      exit 1
+    else
+      BUILD_COMMIT=true
+      TARGET_COMMIT="$2"
+      shift
+    fi
+  ;;
+
+  #CUSTOM VERSION STRING FOR COMPATIBILITY
+  -s | --version-string )
+    if [[ "$2" =~ ^-.* || "$2" == "" ]]; then
+      echo -e "\nYou must specify a valid version string"
+      exit 1
+    else
+      CHANGE_VERSION_STRING=true
+      TARGET_VERSION_STRING="$2"
+      shift
+    fi
   ;;
 
   esac
@@ -238,10 +259,20 @@ cd "$BASE"
 
 #CALL upgrade.sh TO BUILD TES3MP
 echo -e "\n>>Preparing to build TES3MP"
-if [ ! $BUILD_COMMIT ]; then
-  bash upgrade.sh --cores "$CORES" --install
+
+UPGRADE_ARGS="--cores $CORES"
+
+if [ $BUILD_COMMIT ]; then
+  UPGRADE_ARGS="$UPGRADE_ARGS --commit \"$TARGET_COMMIT\""
 else
-  bash upgrade.sh --cores "$CORES" --commit "$TARGET_COMMIT"
+  UPGRADE_ARGS="$UPGRADE_ARGS --install"
 fi
+
+if [ $CHANGE_VERSION_STRING ]; then
+  UPGRADE_ARGS="$UPGRADE_ARGS --version-string \"$TARGET_VERSION_STRING\""
+fi
+
+echo -e "$UPGRADE_ARGS"
+bash upgrade.sh $UPGRADE_ARGS
 
 read

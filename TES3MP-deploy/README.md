@@ -19,6 +19,8 @@ They are pretty bare and have no redundancy (yet), if you feel like testing it, 
 
     -h, --commit HASH : Build a specific TES3MP commit
 
+    -s, --version-string STRING : Sets the version string for compatibility reasons
+
 **upgrade.sh** -- Pulls the latest TES3MP code and if there are any changes, rebuilds the project, keeping the config files safe via symlinks
 
     -c, --cores N : Use N threads for building TES3MP and its dependencies
@@ -28,6 +30,8 @@ They are pretty bare and have no redundancy (yet), if you feel like testing it, 
     -u, --check-changes : Upgrade without asking, if there are changes in the upstream code, useful for scheduled auto-upgrading
 
     -h, --commit HASH : Build a specific TES3MP commit
+
+    -s, --version-string STRING : Sets the version string for compatibility reasons
 
 --
 

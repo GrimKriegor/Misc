@@ -6,8 +6,12 @@ while [ $# -ne 0 ]; do
 
   #NUMBER OF CPU THREADS
   -c | --cores )
-    ARG_CORES=$2
-    shift
+    if [[ "$2" =~ ^-.* || "$2" == "" ]]; then
+      ARG_CORES=""
+    else
+      ARG_CORES=$2
+      shift
+    fi
   ;;
 
   #FIRST TIME RUN, INSTALL WITHOUT ASKING
@@ -22,9 +26,26 @@ while [ $# -ne 0 ]; do
 
   #BUILD SPECIFIC COMMIT
   -h | --commit )
-    BUILD_COMMIT=true
-    TARGET_COMMIT=$2
-    shift
+    if [[ "$2" =~ ^-.* || "$2" == "" ]]; then
+      echo -e "\nYou must specify a valid commit hash"
+      exit 1
+    else
+      BUILD_COMMIT=true
+      TARGET_COMMIT="$2"
+      shift
+    fi
+  ;;
+
+  #CUSTOM VERSION STRING FOR COMPATIBILITY
+  -s | --version-string )
+    if [[ "$2" =~ ^-.* || "$2" == "" ]]; then
+      echo -e "\nYou must specify a valid version string"
+      exit 1
+    else
+      CHANGE_VERSION_STRING=true
+      TARGET_VERSION_STRING="$2"
+      shift
+    fi
   ;;
 
   esac
@@ -79,12 +100,14 @@ else
 fi
 cd "$BASE"
 
-#OPTION TO UPGRADE
+#OPTION TO INSTALL
 if [ $INSTALL ]; then
+  REBUILD="YES"
   UPGRADE="YES"
 
 elif [ $CHECK_CHANGES ]; then
   if [ $GIT_CHANGES ]; then
+    REBUILD="YES"
     UPGRADE="YES"
   else
     echo -e "\nNo new commits, exiting."
@@ -96,29 +119,64 @@ elif [ $BUILD_COMMIT ]; then
   if [ "$TARGET_COMMIT" == "latest" ]; then
     echo -e "\nChecking out the latest commit."
     git stash
+    git pull
     git checkout master
   else
     echo -e "\nChecking out $TARGET_COMMIT"
     git stash
+    git pull
     git checkout "$TARGET_COMMIT"
   fi
-  UPGRADE="YES"
+  REBUILD="YES"
   cd "$BASE"
 
 else
   echo -e "\nDo you wish to rebuild TES3MP? (type YES to continue)"
-  read UPGRADE
+  UPGRADE="YES"
+  if [ $CHANGE_VERSION_STRING ]; then
+    UPGRADE="NO"
+  fi
+  read REBUILD
 
 fi
 
+#CHANGE VERSION STRING
+if [ $CHANGE_VERSION_STRING ]; then
+  cd "$CODE"
+
+  if [[ "$TARGET_VERSION_STRING" == "" || "$TARGET_VERSION_STRING" == "latest" ]]; then
+    echo -e "\nUsing the upstream version string"
+    git stash
+    cd "$KEEPERS"/PluginExamples
+    git stash
+    cd "$CODE"
+  else
+    echo -e "\nUsing \"$TARGET_VERSION_STRING\" as version string"
+    sed -i "s|#define TES3MP_VERSION .*|#define TES3MP_VERSION \"$TARGET_VERSION_STRING\"|g" ./components/openmw-mp/Version.hpp
+    sed -i "s|    if tes3mp.GetServerVersion() ~= .*|    if tes3mp.GetServerVersion() ~= \"$TARGET_VERSION_STRING\" then|g" "$KEEPERS"/PluginExamples/scripts/server.lua
+  fi
+
+  cd "$BASE"
+fi
+
 #REBUILD OPENMW/TES3MP
-if [ "$UPGRADE" = "YES" ]; then
+if [ "$REBUILD" = "YES" ]; then
 
   #PULL CODE CHANGES FROM THE GIT REPOSITORY
-  echo -e "\n>> Pulling code changes from git"
-  cd "$CODE"
-  git pull
-  cd "$BASE"
+  if [ "$UPGRADE" == "YES" ]; then
+    echo -e "\n>> Pulling code changes from git"
+    cd "$CODE"
+    git stash
+    git pull
+    git checkout master
+    cd "$BASE"
+
+    cd "$KEEPERS"/PluginExamples
+    git stash
+    git pull
+    git checkout master
+    cd "$BASE"
+  fi
 
   echo -e "\n>> Doing a clean build of TES3MP"
 

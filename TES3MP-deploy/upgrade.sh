@@ -168,11 +168,13 @@ if [ "$REBUILD" = "YES" ]; then
     cd "$CODE"
     git stash
     git pull
+    git checkout master
     cd "$BASE"
 
     cd "$KEEPERS"/PluginExamples
     git stash
     git pull
+    git checkout master
     cd "$BASE"
   fi
 

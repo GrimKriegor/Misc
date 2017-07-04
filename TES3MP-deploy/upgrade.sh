@@ -100,25 +100,6 @@ else
 fi
 cd "$BASE"
 
-#CHANGE VERSION STRING
-if [ $CHANGE_VERSION_STRING ]; then
-  cd "$CODE"
-
-  if [[ "$TARGET_VERSION_STRING" == "" || "$TARGET_VERSION_STRING" == "latest" ]]; then
-    echo -e "\nUsing the upstream version string"
-    git stash
-    cd "$KEEPERS"/PluginExamples
-    git stash
-    cd "$CODE"
-  else
-    echo -e "\nUsing \"$TARGET_VERSION_STRING\" as version string"
-    sed -i "s|#define TES3MP_VERSION .*|#define TES3MP_VERSION \"$TARGET_VERSION_STRING\"|g" ./components/openmw-mp/Version.hpp
-    sed -i "s|    if tes3mp.GetServerVersion() ~= .*|    if tes3mp.GetServerVersion() ~= \"$TARGET_VERSION_STRING\" then|g" "$KEEPERS"/PluginExamples/scripts/server.lua
-  fi
-
-  cd "$BASE"
-fi
-
 #OPTION TO INSTALL
 if [ $INSTALL ]; then
   REBUILD="YES"
@@ -157,6 +138,25 @@ else
   fi
   read REBUILD
 
+fi
+
+#CHANGE VERSION STRING
+if [ $CHANGE_VERSION_STRING ]; then
+  cd "$CODE"
+
+  if [[ "$TARGET_VERSION_STRING" == "" || "$TARGET_VERSION_STRING" == "latest" ]]; then
+    echo -e "\nUsing the upstream version string"
+    git stash
+    cd "$KEEPERS"/PluginExamples
+    git stash
+    cd "$CODE"
+  else
+    echo -e "\nUsing \"$TARGET_VERSION_STRING\" as version string"
+    sed -i "s|#define TES3MP_VERSION .*|#define TES3MP_VERSION \"$TARGET_VERSION_STRING\"|g" ./components/openmw-mp/Version.hpp
+    sed -i "s|    if tes3mp.GetServerVersion() ~= .*|    if tes3mp.GetServerVersion() ~= \"$TARGET_VERSION_STRING\" then|g" "$KEEPERS"/PluginExamples/scripts/server.lua
+  fi
+
+  cd "$BASE"
 fi
 
 #REBUILD OPENMW/TES3MP

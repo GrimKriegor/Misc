@@ -1,6 +1,6 @@
-#DEPRECATED
+# DEPRECATED
 
-#CHECK [https://github.com/GrimKriegor/TES3MP-deploy]()
+# CHECK [https://github.com/GrimKriegor/TES3MP-deploy]()
 
 -
 

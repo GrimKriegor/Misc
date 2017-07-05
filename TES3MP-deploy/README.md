@@ -1,4 +1,13 @@
-# TES3MP Deploy Script
+#DEPRECATED
+#CHECK [https://github.com/GrimKriegor/TES3MP-deploy]()
+
+-
+
+-
+
+-
+
+## TES3MP Deploy Script
 ### A pair of scripts for easily installing and upgrading TES3MP
 <grimkriegor@krutt.org>
 
